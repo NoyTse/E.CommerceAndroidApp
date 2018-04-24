@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -26,9 +28,13 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
 
+import static android.support.v4.content.ContextCompat.startActivity;
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Main Activity";
     private FacebookLogin mFacebookLogin;
+    private GmailLogin mGmailLogin;
     private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +43,9 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mFacebookLogin = new FacebookLogin(this,mAuth,(LoginButton)findViewById(R.id.facebookLoginBtn));
+
+
+        mGmailLogin = new GmailLogin(this);
 
     }
 
@@ -51,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
+
+
     }
 
     private void updateUI(FirebaseUser currentUser) {
@@ -62,5 +73,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void onLoggedInUser(FirebaseUser loggedInUser){
 
+    }
+
+    public void onSignUpClick(View view) {
+        Intent i = new Intent(getApplicationContext(), SignUpActivity.class);
+        startActivity(i);
     }
 }
