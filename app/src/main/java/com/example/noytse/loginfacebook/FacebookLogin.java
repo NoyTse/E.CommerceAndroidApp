@@ -40,6 +40,7 @@ public class FacebookLogin {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         mCallbackManager.onActivityResult(requestCode,resultCode,data);
+        int x= 0;
     }
 
 
