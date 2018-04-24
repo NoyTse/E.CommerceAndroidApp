@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "13742759186",
+    "firebase_url": "https://loginfacebook-79616.firebaseio.com",
+    "project_id": "loginfacebook-79616",
+    "storage_bucket": "loginfacebook-79616.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:13742759186:android:c36a93fb50158e34",
+        "android_client_info": {
+          "package_name": "com.example.noytse.loginfacebook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "13742759186-a5u050p4tdi67vq074jv991ajjpr2fe0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.noytse.loginfacebook",
+            "certificate_hash": "81e6df2cb7bbd743e0b5eb778f4f002059c90214"
+          }
+        },
+        {
+          "client_id": "13742759186-p3hndq0f36irh3shj783pujf7klfdcsc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOlC2Qj9lklJH-qZ_chW8qYENvX7Be0GI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "13742759186-p3hndq0f36irh3shj783pujf7klfdcsc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
