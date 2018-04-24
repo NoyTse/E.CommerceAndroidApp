@@ -15,7 +15,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import static android.support.v4.content.ContextCompat.startActivities;
 import static android.support.v4.content.ContextCompat.startActivity;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by user on 24/04/2018.
@@ -78,13 +80,11 @@ public class EmailPasswordLogin {
                 });
     }
 
-    public void onSignUpClick(View view) {
-        //Intent i = new Intent(getApplicationContext(), signUp.class);
-       // startActivity(i);
-    }
+    //FindView<>.onClick = () => {EmailPassonSign}
+
 
     public void displayMessage(String message) {
-        //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
 
 }
