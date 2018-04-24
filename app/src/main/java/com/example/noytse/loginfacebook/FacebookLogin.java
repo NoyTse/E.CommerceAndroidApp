@@ -33,6 +33,7 @@ public class FacebookLogin {
     private MainActivity mLoginActivity;
 
     public FacebookLogin(MainActivity loginActivity, FirebaseAuth mAuth, LoginButton facebookLoginBtn) {
+        this.mCallbackManager = CallbackManager.Factory.create();
         this.mAuth = mAuth;
         this.mLoginActivity = loginActivity;
         registerBtnEvents(facebookLoginBtn);
@@ -40,7 +41,6 @@ public class FacebookLogin {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         mCallbackManager.onActivityResult(requestCode,resultCode,data);
-        int x= 0;
     }
 
 
