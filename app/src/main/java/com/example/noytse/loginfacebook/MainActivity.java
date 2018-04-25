@@ -1,38 +1,21 @@
 package com.example.noytse.loginfacebook;
 
-import android.app.Application;
 import android.content.Intent;
-import android.os.Debug;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
-
-import java.util.Arrays;
-
-import static android.support.v4.content.ContextCompat.startActivity;
-import static com.facebook.FacebookSdk.getApplicationContext;
+import com.google.firebase.provider.FirebaseInitProvider;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Main Activity";
@@ -41,20 +24,22 @@ public class MainActivity extends AppCompatActivity {
     private EmailPasswordLogin mEmailPassLogin;
     private AnonymouslyLogin mAnonymouslyLogin;
     private FirebaseAuth mAuth;
-    private boolean mAnonymosEnable = true;
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
+    private boolean mAnonymouseEnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        checkAnonymouseEnable();
         mAuth = FirebaseAuth.getInstance();
         mFacebookLogin = new FacebookLogin(this,mAuth,(LoginButton)findViewById(R.id.facebookLoginBtn));
 
         mEmailPassLogin = new EmailPasswordLogin(this,mAuth);
         SignInButton gmailSignInBtn = (SignInButton)findViewById(R.id.btnGoogleSignIn);
         mGmailLogin = new GmailLogin(this,gmailSignInBtn);
-        if (mAuth.signInAnonymously().isCanceled())
+        if (!mAnonymouseEnable)
             findViewById(R.id.lblSkip).setVisibility(View.INVISIBLE);
         else{
             mAnonymouslyLogin = new AnonymouslyLogin(this, mAuth, (TextView)findViewById(R.id.lblSkip));
@@ -75,6 +60,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(signUpIntent);
             }
         });
+    }
+
+    private void checkAnonymouseEnable() {
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        mFirebaseRemoteConfig.activateFetched();
+        mAnonymouseEnable = mFirebaseRemoteConfig.getBoolean("AnonymouseEnable");
     }
 
     public void showInvalidToolTip(boolean validEmail, boolean validPassword){
@@ -118,9 +109,5 @@ public class MainActivity extends AppCompatActivity {
             startActivity(userProfileIntent);
             finish();
         }
-    }
-
-    public void setAnonymosEnable(boolean bool){
-        mAnonymosEnable=bool;
     }
 }
