@@ -4,37 +4,66 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.example.user.ex2.signUp">
-
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sign Up"
+        android:layout_marginBottom="5dp"
+        android:textSize="24sp"
+        android:textColor="@color/colorPrimary"
+        android:background="@color/SignUpTitleBackground"
+        android:paddingVertical="5dp"
+        android:elevation="5dp"
+        android:textStyle="bold"
+        android:gravity="center"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="- Please enter your Email and password -"
+        android:layout_marginVertical="5dp"
+        android:layout_gravity="center"/>
     <EditText
         android:id="@+id/Emailtxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:ems="10"
-        android:hint="Email"
         android:inputType="textEmailAddress"
-        tools:layout_editor_absoluteX="29dp"
-        tools:layout_editor_absoluteY="46dp" />
-
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email"
+        android:layout_marginHorizontal="30dp"/>
+    <TextView
+        android:id="@+id/lblSignUpInvalidEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="invalid email entered MSG"
+        android:layout_marginHorizontal="30dp"
+        android:visibility="gone"
+        android:textColor="#ff0000"/>
     <EditText
         android:id="@+id/Passwordtxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:ems="10"
-        android:hint="password"
         android:inputType="textPassword"
-        tools:layout_editor_absoluteX="29dp"
-        tools:layout_editor_absoluteY="100dp" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:layout_marginHorizontal="30dp"/>
+    <TextView
+        android:id="@+id/lblSignUpInvalidPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="invalid password entered MSG"
+        android:layout_marginHorizontal="30dp"
+        android:textColor="#ff0000"/>
 
-    <Button
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/SignUpBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:onClick="onSignUpClick"
-        android:text="Sign Up" />
+        android:background="@drawable/button_background"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:elevation="15dp"
+        android:text = "Sign Up"/>
+
+
 
 </LinearLayout>

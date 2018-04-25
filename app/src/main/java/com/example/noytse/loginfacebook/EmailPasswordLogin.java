@@ -24,39 +24,36 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  */
 
 public class EmailPasswordLogin {
+    public static final int INVALID_EMAIL = 0;
+    public static final int INVALID_PASSWORD = 1;
     private static final String TAG  = "EmailPasswordLogin";
     private String email;
     private String password;
     private FirebaseAuth mAuth;
     private MainActivity activity;
 
-    public EmailPasswordLogin(MainActivity activity,String email, String password,FirebaseAuth auth) {
+
+    public void setInput(String i_email, String i_password){
+        this.email = i_email;
+        this.password = i_password;
+    }
+    public EmailPasswordLogin(MainActivity activity,FirebaseAuth auth) {
         this.activity = activity;
         this.email = email;
         this.password = password;
         mAuth = FirebaseAuth.getInstance();
     }
 
-    public FirebaseUser Start() {
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        return currentUser;
-    }
-
-
-
     public void onSignInClick(View view) {
-        if (email.isEmpty()) {
-            displayMessage("Invalid Email field");
-        } else if (!email.contains("@")) {
-            displayMessage("Email nust contains @");
+        if (email.isEmpty() || !email.contains("@")) {
+            activity.showInvalidToolTip(INVALID_EMAIL);
         } else if (password.isEmpty()) {
-            displayMessage("Invalid Password field");
+            activity.showInvalidToolTip(INVALID_PASSWORD);
         }
         signIn(email, password);
     }
 
-    public void signIn(String email,String password)
+    private void signIn(String email,String password)
     {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
@@ -74,17 +71,7 @@ public class EmailPasswordLogin {
                                     Toast.LENGTH_SHORT).show();
                             activity.onLoggedInUser(null);
                         }
-
-                        // ...
                     }
                 });
     }
-
-    //FindView<>.onClick = () => {EmailPassonSign}
-
-
-    public void displayMessage(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-    }
-
 }
