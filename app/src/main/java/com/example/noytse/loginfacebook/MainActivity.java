@@ -54,12 +54,11 @@ public class MainActivity extends AppCompatActivity {
         mEmailPassLogin = new EmailPasswordLogin(this,mAuth);
         SignInButton gmailSignInBtn = (SignInButton)findViewById(R.id.btnGoogleSignIn);
         mGmailLogin = new GmailLogin(this,gmailSignInBtn);
-        if (!mAnonymosEnable)
+        if (mAuth.signInAnonymously().isCanceled())
             findViewById(R.id.lblSkip).setVisibility(View.INVISIBLE);
         else{
             mAnonymouslyLogin = new AnonymouslyLogin(this, mAuth, (TextView)findViewById(R.id.lblSkip));
         }
-
         ((AppCompatButton)findViewById(R.id.btnSignIn)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -121,4 +120,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void setAnonymosEnable(boolean bool){
+        mAnonymosEnable=bool;
+    }
 }
