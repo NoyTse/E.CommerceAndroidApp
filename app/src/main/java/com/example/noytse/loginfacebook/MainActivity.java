@@ -20,6 +20,7 @@ import com.facebook.FacebookException;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -48,9 +49,10 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mFacebookLogin = new FacebookLogin(this,mAuth,(LoginButton)findViewById(R.id.facebookLoginBtn));
-        mGmailLogin = new GmailLogin(this);
-        mEmailPassLogin = new EmailPasswordLogin(this,mAuth);
 
+        mEmailPassLogin = new EmailPasswordLogin(this,mAuth);
+        SignInButton gmailSignInBtn = (SignInButton)findViewById(R.id.btnGoogleSignIn);
+        mGmailLogin = new GmailLogin(this,gmailSignInBtn);
         if (!mAnonymosEnable)
             findViewById(R.id.lblSkip).setVisibility(View.INVISIBLE);
 
@@ -88,6 +90,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == GmailLogin.GoogleSignIN)
+            mGmailLogin.onActivityResult(requestCode,resultCode,data);
+
         mFacebookLogin.onActivityResult(requestCode,resultCode,data);
     }
 

@@ -46,9 +46,9 @@ public class EmailPasswordLogin {
 
     public void onSignInClick(View view) {
         if (email.isEmpty() || !email.contains("@")) {
-            activity.showInvalidToolTip(INVALID_EMAIL);
+            activity.showInvalidToolTip(false,false);
         } else if (password.isEmpty()) {
-            activity.showInvalidToolTip(INVALID_PASSWORD);
+            activity.showInvalidToolTip(false,false);
         }
         signIn(email, password);
     }
