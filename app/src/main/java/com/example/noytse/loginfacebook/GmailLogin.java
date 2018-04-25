@@ -35,7 +35,7 @@ public class GmailLogin {
         //super.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
+/*        if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 // Google Sign In was successful, authenticate with Firebase
@@ -46,6 +46,6 @@ public class GmailLogin {
                 Log.w(TAG, "Google sign in failed", e);
                 // ...
             }
-        }
+        }*/
     }
 }
