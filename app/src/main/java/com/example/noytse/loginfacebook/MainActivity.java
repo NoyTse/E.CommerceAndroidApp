@@ -6,8 +6,10 @@ import android.os.Debug;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +37,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Main Activity";
     private FacebookLogin mFacebookLogin;
     private GmailLogin mGmailLogin;
+    private EmailPasswordLogin mEmailPassLogin;
     private FirebaseAuth mAuth;
+    private boolean mAnonymosEnable = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,10 +48,37 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mFacebookLogin = new FacebookLogin(this,mAuth,(LoginButton)findViewById(R.id.facebookLoginBtn));
-
-
         mGmailLogin = new GmailLogin(this);
+        mEmailPassLogin = new EmailPasswordLogin(this,mAuth);
 
+        if (!mAnonymosEnable)
+            findViewById(R.id.lblSkip).setVisibility(View.INVISIBLE);
+
+        ((AppCompatButton)findViewById(R.id.btnSignIn)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String inputEmail = ((EditText)findViewById(R.id.txtSignInEmail)).getText().toString();
+                String inputPassword = ((EditText)findViewById(R.id.txtSignInPassword)).getText().toString();
+                mEmailPassLogin.setInput(inputEmail,inputPassword);
+                mEmailPassLogin.onSignInClick(view);
+            }
+        });
+        ((AppCompatButton)findViewById(R.id.btnSignUp)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent signUpIntent = new Intent(getApplicationContext(), SignUpActivity.class);
+                startActivity(signUpIntent);
+            }
+        });
+    }
+
+    public void showInvalidToolTip(int errorID){
+        if (errorID == EmailPasswordLogin.INVALID_EMAIL){
+            findViewById(R.id.lblSignInInvalidEmail).setVisibility(View.VISIBLE);
+        }
+        if (errorID == EmailPasswordLogin.INVALID_PASSWORD) {
+            findViewById(R.id.lblSignInInvalidPassword).setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -59,24 +91,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
-
+        onLoggedInUser(currentUser);
 
     }
 
-    private void updateUI(FirebaseUser currentUser) {
-        if (currentUser == null)
-            ((TextView)findViewById(R.id.helloText)).setText("I got null");
-        else
-            ((TextView)findViewById(R.id.helloText)).setText(currentUser.getDisplayName());
-    }
 
     public void onLoggedInUser(FirebaseUser loggedInUser){
-
+        if (loggedInUser != null) {
+            Intent userProfileIntent = new Intent(this,UserProfileActivity.class);
+            userProfileIntent.putExtra(UserProfileActivity.k_UserName, loggedInUser.getDisplayName());
+            userProfileIntent.putExtra(UserProfileActivity.k_UserEmail, loggedInUser.getEmail());
+            if (loggedInUser.getPhotoUrl() != null)
+                userProfileIntent.putExtra(UserProfileActivity.k_UserPhotoURL,loggedInUser.getPhotoUrl());
+            startActivity(userProfileIntent);
+            finish();
+        }
     }
 
-    public void onSignUpClick(View view) {
-        Intent i = new Intent(getApplicationContext(), SignUpActivity.class);
-        startActivity(i);
-    }
 }

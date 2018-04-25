@@ -1,77 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:orientation="vertical">
-
-    <ImageView
-        android:layout_width="wrap_content"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:fillViewport="true">
+  <LinearLayout
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/logo" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="17sp"
-        android:text="- Please sign in with Email and Password -"
-        android:layout_marginBottom="5dp"
-        android:layout_gravity="center"/>
-    <EditText
-        android:id="@+id/txtSignInEmail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Email"
-        android:layout_marginHorizontal="30dp"/>
-    <EditText
-        android:id="@+id/txtSignInPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Password"
-        android:layout_marginHorizontal="30dp"/>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="30dp"
-        android:layout_marginBottom="5dp">
+        android:orientation="vertical">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/logo" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="6dp"
-            android:textColor="#0066ff"
-            android:text="Forget password?"
-            android:textSize="17sp"/>
+            android:text="- Please sign in with Email and Password -"
+            android:layout_marginBottom="5dp"
+            android:layout_gravity="center"/>
+        <EditText
+            android:id="@+id/txtSignInEmail"
+            android:inputType="textEmailAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:layout_marginHorizontal="30dp"/>
+        <TextView
+            android:id="@+id/lblSignInInvalidEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="invalid email entered MSG"
+            android:layout_marginHorizontal="30dp"
+            android:visibility="gone"
+            android:textColor="#ff0000"/>
+        <EditText
+            android:id="@+id/txtSignInPassword"
+            android:inputType="textPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:layout_marginHorizontal="30dp"/>
+        <TextView
+            android:id="@+id/lblSignInInvalidPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:text="invalid password entered MSG"
+            android:layout_marginHorizontal="30dp"
+            android:textColor="#ff0000"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="30dp"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:layout_marginBottom="5dp"
+            android:clipToPadding="false"> <!--this line enable buttons to elevation-->
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btnSignIn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_background"
+                android:layout_marginHorizontal="5dp"
+                android:elevation="15dp"
+                android:text = "Sign In"/>
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btnSignUp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:background="@drawable/button_background"
+                android:text = "Sign Up"/>
+        </LinearLayout>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sign up!"
-            android:textColor="#0066ff"
-            android:layout_marginRight="6dp"
-            android:layout_alignParentRight="true"
-            android:textSize="17sp"/>
-    </RelativeLayout>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="- Or -"
-        android:textSize="17sp"
-        android:layout_marginVertical="8dp"
-        android:layout_gravity="center"/>
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/facebookLoginBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="8dp"
-        android:layout_marginVertical="7dp"
-        android:layout_gravity="center_horizontal" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="- Or -"
-        android:textSize="17sp"
-        android:layout_marginVertical="8dp"
-        android:layout_gravity="center"/>
-</LinearLayout>
+            android:text="- Or -"
+            android:layout_marginVertical="8dp"
+            android:layout_gravity="center"/>
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/facebookLoginBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="8dp"
+            android:layout_marginVertical="7dp"
+            android:layout_gravity="center_horizontal" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="- Or -"
+            android:layout_marginVertical="8dp"
+            android:layout_gravity="center"/>
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"/>
+        <TextView
+            android:id="@+id/lblSkip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Skip"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:textColor="@color/com_facebook_blue"/>
+    </LinearLayout>
+</ScrollView>
