@@ -2,20 +2,28 @@ package com.example.noytse.loginfacebook;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.provider.FirebaseInitProvider;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Main Activity";
@@ -39,11 +47,7 @@ public class MainActivity extends AppCompatActivity {
         mEmailPassLogin = new EmailPasswordLogin(this,mAuth);
         SignInButton gmailSignInBtn = (SignInButton)findViewById(R.id.btnGoogleSignIn);
         mGmailLogin = new GmailLogin(this,gmailSignInBtn);
-        if (!mAnonymouseEnable)
-            findViewById(R.id.lblSkip).setVisibility(View.INVISIBLE);
-        else{
-            mAnonymouslyLogin = new AnonymouslyLogin(this, mAuth, (TextView)findViewById(R.id.lblSkip));
-        }
+
         ((AppCompatButton)findViewById(R.id.btnSignIn)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,9 +67,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkAnonymouseEnable() {
+        final String anonymosParamName = "AnonymouseEnable";
+        Map<String,Object> remoteParams = new HashMap<>();
+        remoteParams.put(anonymosParamName,0);
+
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        mFirebaseRemoteConfig.activateFetched();
-        mAnonymouseEnable = mFirebaseRemoteConfig.getBoolean("AnonymouseEnable");
+        mFirebaseRemoteConfig.setDefaults(remoteParams);
+
+        mFirebaseRemoteConfig.fetch(3600)
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(MainActivity.this, "Fetch Succeeded",
+                                    Toast.LENGTH_SHORT).show();
+
+                            // After config data is successfully fetched, it must be activated before newly fetched
+                            // values are returned.
+                            mFirebaseRemoteConfig.activateFetched();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Fetch Failed",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        mAnonymouseEnable = mFirebaseRemoteConfig.getBoolean(anonymosParamName);
+                        if (!mAnonymouseEnable)
+                            findViewById(R.id.lblSkip).setVisibility(View.INVISIBLE);
+                        else
+                            mAnonymouslyLogin = new AnonymouslyLogin(MainActivity.this, mAuth, (TextView) findViewById(R.id.lblSkip));
+                    }
+                });
     }
 
     public void showInvalidToolTip(boolean validEmail, boolean validPassword){

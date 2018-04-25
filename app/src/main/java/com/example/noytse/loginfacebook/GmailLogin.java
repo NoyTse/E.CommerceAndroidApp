@@ -79,7 +79,7 @@ public class GmailLogin {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(mMainActivity,"Google sign in failed",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mMainActivity,task.getException().getMessage(),Toast.LENGTH_SHORT).show();
                             mMainActivity.onLoggedInUser(null);
                         }
 
