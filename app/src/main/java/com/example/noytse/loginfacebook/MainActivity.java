@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
             userProfileIntent.putExtra(UserProfileActivity.k_UserName, loggedInUser.getDisplayName());
             userProfileIntent.putExtra(UserProfileActivity.k_UserEmail, loggedInUser.getEmail());
             if (loggedInUser.getPhotoUrl() != null)
-                userProfileIntent.putExtra(UserProfileActivity.k_UserPhotoURL,loggedInUser.getPhotoUrl());
+                userProfileIntent.putExtra(UserProfileActivity.k_UserPhotoURL,loggedInUser.getPhotoUrl().toString());
             startActivity(userProfileIntent);
             finish();
         }

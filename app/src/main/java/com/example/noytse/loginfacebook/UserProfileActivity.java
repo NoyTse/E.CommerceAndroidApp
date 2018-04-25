@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.picasso.Picasso;
 
 public class UserProfileActivity extends AppCompatActivity {
     public static final String k_UserPhotoURL = "photoUrl";
@@ -35,6 +36,9 @@ public class UserProfileActivity extends AppCompatActivity {
 
         ((TextView)findViewById(R.id.lblUserName)).setText(userName);
         ((TextView)findViewById(R.id.lblUserEmail)).setText(userEmail);
+        ImageView imgUserPhoto = ((ImageView)findViewById(R.id.imgUserPhoto));
         //Load image
+        if (userPhotoUrl != null)
+            Picasso.with(this).load(userPhotoUrl).into(imgUserPhoto);
     }
 }
