@@ -55,6 +55,6 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="15dp"
-        android:background="@drawable/button_background"
+        android:background="@drawable/signup_btn_background"
         android:text = "Sign Out"/>
 </RelativeLayout>
