@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private FacebookLogin mFacebookLogin;
     private GmailLogin mGmailLogin;
     private EmailPasswordLogin mEmailPassLogin;
+    private AnonymouslyLogin mAnonymouslyLogin;
     private FirebaseAuth mAuth;
     private boolean mAnonymosEnable = true;
 
@@ -55,6 +56,9 @@ public class MainActivity extends AppCompatActivity {
         mGmailLogin = new GmailLogin(this,gmailSignInBtn);
         if (!mAnonymosEnable)
             findViewById(R.id.lblSkip).setVisibility(View.INVISIBLE);
+        else{
+            mAnonymouslyLogin = new AnonymouslyLogin(this, mAuth, (TextView)findViewById(R.id.lblSkip));
+        }
 
         ((AppCompatButton)findViewById(R.id.btnSignIn)).setOnClickListener(new View.OnClickListener() {
             @Override
