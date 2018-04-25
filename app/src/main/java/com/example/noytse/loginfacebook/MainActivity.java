@@ -72,13 +72,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void showInvalidToolTip(int errorID){
-        if (errorID == EmailPasswordLogin.INVALID_EMAIL){
+    public void showInvalidToolTip(boolean validEmail, boolean validPassword){
+        if(!validEmail)
             findViewById(R.id.lblSignInInvalidEmail).setVisibility(View.VISIBLE);
-        }
-        if (errorID == EmailPasswordLogin.INVALID_PASSWORD) {
+        else if (findViewById(R.id.lblSignInInvalidEmail).getVisibility() != View.GONE)
+            findViewById(R.id.lblSignInInvalidEmail).setVisibility(View.GONE);
+
+
+        if(!validPassword)
             findViewById(R.id.lblSignInInvalidPassword).setVisibility(View.VISIBLE);
-        }
+        else if (findViewById(R.id.lblSignInInvalidPassword).getVisibility() != View.GONE)
+            findViewById(R.id.lblSignInInvalidPassword).setVisibility(View.GONE);
     }
 
     @Override
