@@ -53,7 +53,15 @@
             android:text="invalid password entered MSG"
             android:layout_marginHorizontal="30dp"
             android:textColor="#ff0000"/>
-        <LinearLayout
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center"
+          android:onClick="onForgotMyPasswordClick"
+          android:text="Forgot your password?" />
+
+      <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="30dp"

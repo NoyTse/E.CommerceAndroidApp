@@ -56,7 +56,26 @@ public class EmailPasswordLogin {
         }
     }
 
-    private void signIn(String email,String password)
+    public void onForgotMyPasswordClick(View view) {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        String emailAddress = email;
+        if (email.isEmpty() || !email.contains("@")) {
+            //activity.showInvalidToolTip(INVALID_EMAIL);
+            Toast.makeText(getApplicationContext(), "Invalid Email", Toast.LENGTH_LONG).show();
+        }
+        else{
+        auth.sendPasswordResetEmail(emailAddress)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "Email sent.");
+                        }
+                    }
+                });
+        }
+    }
+        private void signIn(String email,String password)
     {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
