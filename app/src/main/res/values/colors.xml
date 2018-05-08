@@ -8,4 +8,9 @@
     <color name="button_default">#1c76bb</color>
     <color name="userProfileActivityBackground">#cceeff</color>
     <color name="SignUpTitleBackground">#90cceeff</color>
+    <color name="ReviewBackground_Title">#90009900</color>
+    <color name="ReviewBackground_Reviews">#ccffcc</color>
+    <color name="White">#FFFFFF</color>
+
+
 </resources>

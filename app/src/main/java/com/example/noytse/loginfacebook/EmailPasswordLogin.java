@@ -47,9 +47,9 @@ public class EmailPasswordLogin {
     public void onSignInClick(View view) {
         if (email.isEmpty() || !email.contains("@")) {
             //activity.showInvalidToolTip(INVALID_EMAIL);
-            Toast.makeText(getApplicationContext(), "Invalid Email", Toast.LENGTH_LONG).show();
-        } else if (password.isEmpty()) {
-            Toast.makeText(getApplicationContext(), "Invalid password, must be 8 characters", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Invalid Email", Toast.LENGTH_SHORT).show();
+        } else if (password.isEmpty() || password.length() < 8) {
+            Toast.makeText(getApplicationContext(), "Invalid password, must be 8 characters", Toast.LENGTH_SHORT).show();
         }
         else{
             signIn(email, password);

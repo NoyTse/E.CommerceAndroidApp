@@ -1,11 +1,9 @@
 package com.example.noytse.loginfacebook;
 
-import android.app.Application;
 import android.content.Intent;
-import android.os.Debug;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.View;
@@ -13,46 +11,42 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.provider.FirebaseInitProvider;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
-import java.util.Arrays;
-
-import static android.support.v4.content.ContextCompat.startActivity;
-import static com.facebook.FacebookSdk.getApplicationContext;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Main Activity";
     private FacebookLogin mFacebookLogin;
     private GmailLogin mGmailLogin;
     private EmailPasswordLogin mEmailPassLogin;
+    private AnonymouslyLogin mAnonymouslyLogin;
     private FirebaseAuth mAuth;
-    private boolean mAnonymosEnable = true;
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
+    private boolean mAnonymouseEnable = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        checkAnonymouseEnable();
         mAuth = FirebaseAuth.getInstance();
         mFacebookLogin = new FacebookLogin(this,mAuth,(LoginButton)findViewById(R.id.facebookLoginBtn));
-        mGmailLogin = new GmailLogin(this);
-        mEmailPassLogin = new EmailPasswordLogin(this,mAuth);
 
-        if (!mAnonymosEnable)
-            findViewById(R.id.lblSkip).setVisibility(View.INVISIBLE);
+        mEmailPassLogin = new EmailPasswordLogin(this,mAuth);
+        SignInButton gmailSignInBtn = (SignInButton)findViewById(R.id.btnGoogleSignIn);
+        mGmailLogin = new GmailLogin(this,gmailSignInBtn);
 
         ((AppCompatButton)findViewById(R.id.btnSignIn)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,22 +66,42 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void showInvalidToolTip(boolean validEmail, boolean validPassword){
-        if(!validEmail)
-            findViewById(R.id.lblSignInInvalidEmail).setVisibility(View.VISIBLE);
-        else if (findViewById(R.id.lblSignInInvalidEmail).getVisibility() != View.GONE)
-            findViewById(R.id.lblSignInInvalidEmail).setVisibility(View.GONE);
+    private void checkAnonymouseEnable() {
+        final String anonymosParamName = "AnonymouseEnable";
+        Map<String,Object> remoteParams = new HashMap<>();
+        remoteParams.put(anonymosParamName,true);
 
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        mFirebaseRemoteConfig.setDefaults(remoteParams);
 
-        if(!validPassword)
-            findViewById(R.id.lblSignInInvalidPassword).setVisibility(View.VISIBLE);
-        else if (findViewById(R.id.lblSignInInvalidPassword).getVisibility() != View.GONE)
-            findViewById(R.id.lblSignInInvalidPassword).setVisibility(View.GONE);
+        mFirebaseRemoteConfig.fetch(0)
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(MainActivity.this, "Fetch Succeeded",
+                                    Toast.LENGTH_SHORT).show();
+
+                            // After config data is successfully fetched, it must be activated before newly fetched
+                            // values are returned.
+                            mFirebaseRemoteConfig.activateFetched();
+                        }
+                        mAnonymouseEnable = mFirebaseRemoteConfig.getBoolean(anonymosParamName);
+                        if (!mAnonymouseEnable)
+                            findViewById(R.id.lblSkip).setVisibility(View.INVISIBLE);
+                        else
+                            mAnonymouslyLogin = new AnonymouslyLogin(MainActivity.this, mAuth, (TextView) findViewById(R.id.lblSkip));
+                    }
+                });
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == GmailLogin.GoogleSignIN)
+            mGmailLogin.onActivityResult(requestCode,resultCode,data);
+
         mFacebookLogin.onActivityResult(requestCode,resultCode,data);
     }
 
@@ -111,5 +125,4 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
     }
-
 }
