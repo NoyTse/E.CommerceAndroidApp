@@ -40,23 +40,20 @@ public class SignUpActivity extends AppCompatActivity {
     public void onSignUpClick(View view) {
 
         boolean valid = true;
-        if (email.getText().toString().isEmpty() || !email.getText().toString().contains("@") ||
-                email.getText().toString().contains(".")) {
+        if (email.getText().toString().isEmpty() || !email.getText().toString().contains("@")) {
             //findViewById(R.id.lblSignInInvalidEmail).setVisibility(View.VISIBLE);
-            Toast.makeText(getApplicationContext(), "Invalid Email", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Invalid Email", Toast.LENGTH_SHORT).show();
             valid = false;
         }
 
         else if (password.getText().toString().isEmpty() || password.getText().toString().length() < 8) {
             //findViewById(R.id.lblSignInInvalidEmail).setVisibility(View.VISIBLE);
-            Toast.makeText(getApplicationContext(), "Invalid Password. must be 8 characters", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Invalid Password. must be 8 characters", Toast.LENGTH_SHORT).show();
             valid = false;
         }
 
         if (valid)
         {
-            findViewById(R.id.lblSignInInvalidEmail).setVisibility(View.GONE);
-            findViewById(R.id.lblSignInInvalidEmail).setVisibility(View.GONE);
             createAccount(email.getText().toString(), password.getText().toString());
         }
     }
