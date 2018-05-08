@@ -105,6 +105,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
         android:background="@color/ReviewBackground_Reviews">
         <TextView
             android:layout_width="match_parent"
@@ -112,8 +113,13 @@
             android:text="Reviews"
             android:textSize="20sp"
             android:gravity="center"
-            android:textColor="@drawable/"
+            android:textColor="@color/White"
+            android:textStyle="bold"
             android:padding="10dp"
             android:background="@color/ReviewBackground_Title"/>
+        <ListView
+            android:id="@+id/prodDetail_reviewList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
     </LinearLayout>
 </LinearLayout>
