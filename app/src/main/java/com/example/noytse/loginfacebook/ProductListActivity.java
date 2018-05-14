@@ -9,9 +9,13 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +23,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ProductListActivity extends AppCompatActivity {
+    private FirebaseUser mFirebaseUser;
+
     private enum eSort {
         NAME,
         PRICE
@@ -41,8 +47,9 @@ public class ProductListActivity extends AppCompatActivity {
         findViewById(R.id.productList_btnSearch).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO if (!mSearchVisible) => adapter filter = none
                 mSearchVisible = !mSearchVisible;
+                if (!mSearchVisible)
+                    mProductList = getProductList();
                 findViewById(R.id.viewSearchLayout).setVisibility(mSearchVisible ? View.VISIBLE : View.GONE);
             }
         });
@@ -67,6 +74,59 @@ public class ProductListActivity extends AppCompatActivity {
                 showSortDialog();
             }
         });
+
+        findViewById(R.id.productList_btnFilter).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showFilterDialog();
+            }
+        });
+
+        findViewById(R.id.productList_btnMyItems).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mProductList = getCurrentUserParchesedProductsList(mFirebaseUser);
+                mListView.setAdapter(new ProductsAdapter(mProductList,getApplicationContext()));
+            }
+        });
+    }
+
+    private List<Product> getCurrentUserParchesedProductsList(FirebaseUser mFirebaseUser) {
+        //TODO here should come the code that fetch only the products the user bought
+        return mProductList;
+    }
+
+    private void showFilterDialog() {
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.filter_dialog);
+        dialog.setTitle("Filter");
+
+
+
+
+
+        dialog.findViewById(R.id.filterDialog_btnDone).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                filterResult filterResult = new filterResult();
+                filterResult.Shoes = ((CheckBox)dialog.findViewById(R.id.checkbox_shoes)).isChecked();
+                filterResult.Bags= ((CheckBox)dialog.findViewById(R.id.checkbox_bags)).isChecked();
+                filterResult.Blue= ((CheckBox)dialog.findViewById(R.id.checkbox_blue)).isChecked();
+                filterResult.Red= ((CheckBox)dialog.findViewById(R.id.checkbox_red)).isChecked();
+                filterResult.Towels= ((CheckBox)dialog.findViewById(R.id.checkbox_towels)).isChecked();
+                filterResult.White= ((CheckBox)dialog.findViewById(R.id.checkbox_white)).isChecked();
+
+                mProductList = getFilteredListFromFirebase(filterResult);
+                mListView.setAdapter(new ProductsAdapter(mProductList,view.getContext()));
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    private List<Product> getFilteredListFromFirebase(filterResult filterResult) {
+        //TODO here should be the code that fetch filtered list from firebase
+        return mProductList;
     }
 
     private void showSortDialog() {
@@ -101,7 +161,7 @@ public class ProductListActivity extends AppCompatActivity {
             if (prod.getName().contains(searchString) || prod.getCategory().contains(searchString)
                     || prod.getPrice().contains(searchString))
                 filteredList.add(prod);
-        mListView.setAdapter(new ProductsAdapter(filteredList,this));
+        mListView.setAdapter(new ProductsAdapter(filteredList,getApplicationContext()));
     }
 
     private List<Product> getProductList() {

@@ -6,6 +6,14 @@
     <string name="sort_message">Select field to order by</string>
     <string name="sort_nameField">Product Name</string>
     <string name="sort_priceField">Product Price</string>
-    <string name="filter_message">Select field to filter by</string>
+    <string name="filter_message">Select values to show</string>
     <string name="filter_shoes">Shoes</string>
+    <string name="filter_towels">towels</string>
+    <string name="filter_bags">bags</string>
+    <string name="filter_blue">blue</string>
+    <string name="filter_white">white</string>
+    <string name="filter_red">red</string>
+    <string name="filter_category">Category</string>
+    <string name="filter_color">Color</string>
+    <string name="myItems">My Items</string>
 </resources>
