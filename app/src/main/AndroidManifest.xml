@@ -41,7 +41,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".SignUpActivity" />
-        <activity android:name=".UserProfileActivity"></activity>
+        <activity android:name=".ProductListActivity"/>
     </application>
 
 </manifest>

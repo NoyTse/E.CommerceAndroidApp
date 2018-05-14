@@ -116,12 +116,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void onLoggedInUser(FirebaseUser loggedInUser){
         if (loggedInUser != null) {
-            Intent userProfileIntent = new Intent(this,UserProfileActivity.class);
+        /*    Intent userProfileIntent = new Intent(this,UserProfileActivity.class);
             userProfileIntent.putExtra(UserProfileActivity.k_UserName, loggedInUser.getDisplayName());
             userProfileIntent.putExtra(UserProfileActivity.k_UserEmail, loggedInUser.getEmail());
             if (loggedInUser.getPhotoUrl() != null)
-                userProfileIntent.putExtra(UserProfileActivity.k_UserPhotoURL,loggedInUser.getPhotoUrl().toString());
-            startActivity(userProfileIntent);
+                userProfileIntent.putExtra(UserProfileActivity.k_UserPhotoURL,loggedInUser.getPhotoUrl().toString());*/
+            Intent productListIntent = new Intent(this,ProductListActivity.class);
+
+
+            startActivity(productListIntent);
             finish();
         }
     }
