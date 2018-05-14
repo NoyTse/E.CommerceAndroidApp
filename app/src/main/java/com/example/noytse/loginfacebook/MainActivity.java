@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private AnonymouslyLogin mAnonymouslyLogin;
     private FirebaseAuth mAuth;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
-    private boolean mAnonymouseEnable;
+    private boolean mAnonymouseEnable = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +69,12 @@ public class MainActivity extends AppCompatActivity {
     private void checkAnonymouseEnable() {
         final String anonymosParamName = "AnonymouseEnable";
         Map<String,Object> remoteParams = new HashMap<>();
-        remoteParams.put(anonymosParamName,0);
+        remoteParams.put(anonymosParamName,true);
 
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         mFirebaseRemoteConfig.setDefaults(remoteParams);
 
-        mFirebaseRemoteConfig.fetch(3600)
+        mFirebaseRemoteConfig.fetch(0)
                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -85,9 +85,6 @@ public class MainActivity extends AppCompatActivity {
                             // After config data is successfully fetched, it must be activated before newly fetched
                             // values are returned.
                             mFirebaseRemoteConfig.activateFetched();
-                        } else {
-                            Toast.makeText(MainActivity.this, "Fetch Failed",
-                                    Toast.LENGTH_SHORT).show();
                         }
                         mAnonymouseEnable = mFirebaseRemoteConfig.getBoolean(anonymosParamName);
                         if (!mAnonymouseEnable)
@@ -98,18 +95,6 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    public void showInvalidToolTip(boolean validEmail, boolean validPassword){
-        if(!validEmail)
-            findViewById(R.id.lblSignInInvalidEmail).setVisibility(View.VISIBLE);
-        else if (findViewById(R.id.lblSignInInvalidEmail).getVisibility() != View.GONE)
-            findViewById(R.id.lblSignInInvalidEmail).setVisibility(View.GONE);
-
-
-        if(!validPassword)
-            findViewById(R.id.lblSignInInvalidPassword).setVisibility(View.VISIBLE);
-        else if (findViewById(R.id.lblSignInInvalidPassword).getVisibility() != View.GONE)
-            findViewById(R.id.lblSignInInvalidPassword).setVisibility(View.GONE);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
