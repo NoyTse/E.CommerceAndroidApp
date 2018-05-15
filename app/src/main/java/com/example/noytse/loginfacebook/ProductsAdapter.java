@@ -58,7 +58,7 @@ public class ProductsAdapter extends BaseAdapter {
         ImageView imgProductPhoto = view.findViewById(R.id.imgProductPhoto);
 
 
-        final Product currentProduct = mProductList.get(i).getBag();
+        final Product currentProduct = mProductList.get(i).getproduct();
         txtProductName.setText(currentProduct.getName());
         txtCategory.setText(currentProduct.getCategory());
         txtPrice.setText(currentProduct.getPrice());

@@ -13,8 +13,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,12 +41,14 @@ public class ProductsDatabase{
 
     }
     private void updateProductsList(DataSnapshot snapshot) {
-//TODO:: this function updates the list of productWithKeys, need to update the adapter from here
+    //this function updates the list of productWithKeys, need to update the adapter from here
         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
             Product product = dataSnapshot.getValue(Product.class);
             Log.e(TAG, "updateProductList >> adding product: " + product.getName());
             String key = dataSnapshot.getKey();
-            mProductsList.add(new ProductWithKey(product,key));
+            //if user before products: check if user parchased the product <=> userKeys[].contain(key)
+            boolean userParchasedTheProduct = true;
+            mProductsList.add(new ProductWithKey(product,userParchasedTheProduct,key));
         }
     }
 
@@ -60,3 +60,4 @@ public class ProductsDatabase{
         return mProductsList;
     }
 }
+

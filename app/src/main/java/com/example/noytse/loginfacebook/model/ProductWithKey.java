@@ -1,19 +1,24 @@
 package com.example.noytse.loginfacebook.model;
 
-public class ProductWithKey {
-    private Product bag;
+import java.io.Serializable;
 
-    public ProductWithKey(Product bag, String key) {
-        this.bag = bag;
+public class ProductWithKey implements Serializable {
+    private Product product;
+    private boolean purchased;
+
+    public ProductWithKey(Product product, boolean purchased, String key) {
+        this.product = product;
+        this.purchased = purchased;
         this.key = key;
     }
 
-    public Product getBag() {
-        return bag;
+
+    public Product getproduct() {
+        return product;
     }
 
-    public void setBag(Product bag) {
-        this.bag = bag;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public String getKey() {
@@ -25,4 +30,12 @@ public class ProductWithKey {
     }
 
     private String key;
+
+    public boolean isPurchased() {
+        return purchased;
+    }
+
+    public void setPurchased(boolean purchased) {
+        this.purchased = purchased;
+    }
 }

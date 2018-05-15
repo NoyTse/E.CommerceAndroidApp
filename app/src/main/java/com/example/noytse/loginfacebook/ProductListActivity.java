@@ -52,6 +52,12 @@ public class ProductListActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot snapshot) {
 
                     myUser = snapshot.getValue(User.class);
+                    //mProductList = products list (With keys) from db
+                    // + if products before user: set the boolean member of ProductWithKey  (isPurchased).
+
+                    //
+                    List<Product> prodListForShowing = new ArrayList<>();
+                    mListView.setAdapter(new ProductsAdapter(mProductList,getApplicationContext(),myUser));
                 }
 
                 @Override
@@ -181,8 +187,8 @@ public class ProductListActivity extends AppCompatActivity {
     private void filterList(final CharSequence searchString) {
         List<ProductWithKey> filteredList = new ArrayList<>();
         for (ProductWithKey prod : mProductList)
-            if (prod.getBag().getName().contains(searchString) || prod.getBag().getCategory().contains(searchString)
-                    || prod.getBag().getPrice().contains(searchString))
+            if (prod.getproduct().getName().contains(searchString) || prod.getproduct().getCategory().contains(searchString)
+                    || prod.getproduct().getPrice().contains(searchString))
                 filteredList.add(prod);
         mListView.setAdapter(new ProductsAdapter(filteredList,getApplicationContext(), myUser));
     }
@@ -195,11 +201,19 @@ public class ProductListActivity extends AppCompatActivity {
         demoReviewList.add(new Review("Demo User Name", "Demo Review 3"));
         //temp implementation       DELETE WHEN IMPLEMENT
         List<ProductWithKey> resList = new ArrayList<>();
+
+        Product demoProd1 = new Product("p1","bags","blue","yes","150x50 cm","Meshi"
+                ,null,"15$",demoReviewList);
+        Product demoProd2 = new Product("p2","bags","red","yes","150x50 cm","Meshi"
+                ,null,"35$",demoReviewList);
+        Product demoProd3 = new Product("a3","Shoes","blue","yes","150x50 cm","Meshi"
+                ,null,"135$",demoReviewList);
+
+
         //resList = getIntent().getBundleExtra("Products");
 
         //resList = (ArrayList<ProductWithKey>)getIntent().getSerializableExtra("Products");
-//        resList.add(new Product("p1","bags","blue","yes","150x50 cm","Meshi"
-//                ,null,"15$",demoReviewList));
+//        resList.add();
 //
 //        resList.add(new Product("p2","bags","red","yes","150x50 cm","Meshi"
 //                ,null,"35$",demoReviewList));
