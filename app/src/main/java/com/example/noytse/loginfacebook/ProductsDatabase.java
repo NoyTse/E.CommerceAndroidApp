@@ -22,13 +22,13 @@ import java.util.List;
 import java.util.Map;
 
 public class ProductsDatabase{
-    List<ProductWithKey> m_productsList = new ArrayList<>();
+
+    ArrayList<ProductWithKey> mProductsList = new ArrayList<>();
     private final String TAG = "Database";
 
     public  ProductsDatabase(){
 
         DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference("products");
-
         productsReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -43,17 +43,20 @@ public class ProductsDatabase{
 
     }
     private void updateProductsList(DataSnapshot snapshot) {
-
+//TODO:: this function updates the list of productWithKeys, need to update the adapter from here
         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
             Product product = dataSnapshot.getValue(Product.class);
             Log.e(TAG, "updateProductList >> adding product: " + product.getName());
             String key = dataSnapshot.getKey();
-            m_productsList.add(new ProductWithKey(product,key));
+            mProductsList.add(new ProductWithKey(product,key));
         }
-        //recyclerView.getAdapter().notifyDataSetChanged();
+    }
 
+    public void setProductsList(ArrayList<ProductWithKey> mProductsList) {
+        this.mProductsList = mProductsList;
+    }
 
-       // recyclerView.getAdapter().notifyDataSetChanged();
-
+    public ArrayList<ProductWithKey> getmProductsList() {
+        return mProductsList;
     }
 }

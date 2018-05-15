@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.example.noytse.loginfacebook.model.Product;
+import com.example.noytse.loginfacebook.model.ProductWithKey;
 import com.example.noytse.loginfacebook.model.User;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,7 +34,7 @@ public class ProductListActivity extends AppCompatActivity {
         NAME,
         PRICE
     };
-    private List<Product> mProductList;
+    private List<ProductWithKey> mProductList;
     private ListView mListView;
     private boolean mSearchVisible = false;
 
@@ -113,7 +114,7 @@ public class ProductListActivity extends AppCompatActivity {
         });
     }
 
-    private List<Product> getCurrentUserParchesedProductsList(FirebaseUser mFirebaseUser) {
+    private List<ProductWithKey> getCurrentUserParchesedProductsList(FirebaseUser mFirebaseUser) {
         //TODO here should come the code that fetch only the products the user bought
         return mProductList;
     }
@@ -146,7 +147,7 @@ public class ProductListActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private List<Product> getFilteredListFromFirebase(filterResult filterResult) {
+    private List<ProductWithKey> getFilteredListFromFirebase(filterResult filterResult) {
         //TODO here should be the code that fetch filtered list from firebase
         return mProductList;
     }
@@ -171,37 +172,40 @@ public class ProductListActivity extends AppCompatActivity {
         dialogBuilder.create().show();
     }
 
-    private List<Product> getSortedListFromFirebase(eSort orderBy) {
+    private List<ProductWithKey> getSortedListFromFirebase(eSort orderBy) {
         //TODO
         //parameter orderBy (eSort.NAME     OR    eSort.PRICE)
         return mProductList;
     }
 
     private void filterList(final CharSequence searchString) {
-        List<Product> filteredList = new ArrayList<>();
-        for (Product prod : mProductList)
-            if (prod.getName().contains(searchString) || prod.getCategory().contains(searchString)
-                    || prod.getPrice().contains(searchString))
+        List<ProductWithKey> filteredList = new ArrayList<>();
+        for (ProductWithKey prod : mProductList)
+            if (prod.getBag().getName().contains(searchString) || prod.getBag().getCategory().contains(searchString)
+                    || prod.getBag().getPrice().contains(searchString))
                 filteredList.add(prod);
         mListView.setAdapter(new ProductsAdapter(filteredList,getApplicationContext(), myUser));
     }
 
-    private List<Product> getProductList() {
+    private List<ProductWithKey> getProductList() {
         //TODO here should be the code that fetch the data from the firebase storeage
         ArrayList<Review> demoReviewList = new ArrayList<>();
         demoReviewList.add(new Review("Demo User Name", "Demo Review 1"));
         demoReviewList.add(new Review("Demo User Name", "Demo Review 2"));
         demoReviewList.add(new Review("Demo User Name", "Demo Review 3"));
         //temp implementation       DELETE WHEN IMPLEMENT
-        List<Product> resList = new ArrayList<>();
-        resList.add(new Product("p1","bags","blue","yes","150x50 cm","Meshi"
-                ,null,"15$",demoReviewList));
+        List<ProductWithKey> resList = new ArrayList<>();
+        //resList = getIntent().getBundleExtra("Products");
 
-        resList.add(new Product("p2","bags","red","yes","150x50 cm","Meshi"
-                ,null,"35$",demoReviewList));
-
-        resList.add(new Product("a3","Shoes","blue","yes","150x50 cm","Meshi"
-                ,null,"135$",demoReviewList));
+        //resList = (ArrayList<ProductWithKey>)getIntent().getSerializableExtra("Products");
+//        resList.add(new Product("p1","bags","blue","yes","150x50 cm","Meshi"
+//                ,null,"15$",demoReviewList));
+//
+//        resList.add(new Product("p2","bags","red","yes","150x50 cm","Meshi"
+//                ,null,"35$",demoReviewList));
+//
+//        resList.add(new Product("a3","Shoes","blue","yes","150x50 cm","Meshi"
+//                ,null,"135$",demoReviewList));
         return  resList;
     }
 }
