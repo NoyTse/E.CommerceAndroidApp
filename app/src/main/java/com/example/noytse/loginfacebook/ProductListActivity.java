@@ -170,13 +170,13 @@ public class ProductListActivity extends AppCompatActivity {
         //temp implementation       DELETE WHEN IMPLEMENT
         List<Product> resList = new ArrayList<>();
         resList.add(new Product("p1","bags","blue","yes","150x50 cm","Meshi"
-                ,null,"15$"));
+                ,null,"15$",null));
 
         resList.add(new Product("p2","bags","red","yes","150x50 cm","Meshi"
-                ,null,"35$"));
+                ,null,"35$",null));
 
         resList.add(new Product("a3","Shoes","blue","yes","150x50 cm","Meshi"
-                ,null,"135$"));
+                ,null,"135$",null));
         return  resList;
     }
 }

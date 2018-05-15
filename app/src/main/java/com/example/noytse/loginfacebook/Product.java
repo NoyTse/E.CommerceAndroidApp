@@ -1,10 +1,13 @@
 package com.example.noytse.loginfacebook;
 
+import java.io.Serializable;
+import java.util.List;
+
 /**
  * Created by NoyTse on 14/05/2018.
  */
 
-public class Product {
+public class Product implements Serializable {
     private String name;
     private String category;
     private String color;
@@ -13,8 +16,9 @@ public class Product {
     private String material;
     private String photoURL;
     private String price;
+    private List<Review> reviewList;
 
-    public Product(String name, String category, String color, String availableInStock, String size, String material, String photoURL, String price) {
+    public Product(String name, String category, String color, String availableInStock, String size, String material, String photoURL, String price,List<Review> reviewList) {
         this.name = name;
         this.category = category;
         this.color = color;
@@ -23,6 +27,12 @@ public class Product {
         this.material = material;
         this.photoURL = photoURL;
         this.price = price;
+        this.reviewList = reviewList;
+    }
+
+    public boolean purchasedByCurrentUser(){
+        //TODO : add new member (boolean purchased) and set it in c'tor to the suitable value from firebase
+        return true;
     }
 
     public String getCategory() {
@@ -87,5 +97,13 @@ public class Product {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public List<Review> getReviewList() {
+        return reviewList;
+    }
+
+    public void setReviewList(List<Review> reviewList) {
+        this.reviewList = reviewList;
     }
 }

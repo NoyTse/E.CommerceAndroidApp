@@ -2,6 +2,7 @@ package com.example.noytse.loginfacebook;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,11 +61,12 @@ public class ProductsAdapter extends BaseAdapter {
         if (currentProduct.getPhotoURL() != null)
             Picasso.with(mContext).load(currentProduct.getPhotoURL()).into(imgProductPhoto);
 
-        imgProductPhoto.setOnClickListener(new View.OnClickListener() {
+        view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String str = "Product" + currentProduct.getName();
-                Toast.makeText(mContext,str,Toast.LENGTH_SHORT).show();
+                Intent prodDetailIntent = new Intent(mContext,ProductDetails.class);
+                prodDetailIntent.putExtra("Product",currentProduct);
+                mContext.startActivity(prodDetailIntent);
             }
         });
 
