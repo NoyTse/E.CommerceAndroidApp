@@ -3,6 +3,7 @@ package com.example.noytse.loginfacebook;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.support.constraint.solver.widgets.Snapshot;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -21,11 +22,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class ProductListActivity extends AppCompatActivity {
     private FirebaseUser mFirebaseUser;
@@ -35,7 +38,7 @@ public class ProductListActivity extends AppCompatActivity {
         NAME,
         PRICE
     };
-    private List<ProductWithKey> mProductList;
+    private Map<String, Product> mProductList;
     private ListView mListView;
     private boolean mSearchVisible = false;
 
@@ -163,7 +166,19 @@ public class ProductListActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private List<ProductWithKey> getFilteredListFromFirebase(filterResult filterResult) {
+    private List<ProductWithKey> getFilteredListFromFirebase(final filterResult filterResult) {
+        DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference("products");
+        productsReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                filterProductList(snapshot, filterResult);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
         //TODO here should be the code that fetch filtered list from firebase
         return mProductList;
     }
@@ -188,10 +203,44 @@ public class ProductListActivity extends AppCompatActivity {
         dialogBuilder.create().show();
     }
 
-    private List<ProductWithKey> getSortedListFromFirebase(eSort orderBy) {
-        //TODO
+    private List<ProductWithKey> getSortedListFromFirebase(final eSort orderBy) {
+        DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference("products");
+        productsReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                sortProductList(snapshot, orderBy);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
         //parameter orderBy (eSort.NAME     OR    eSort.PRICE)
         return mProductList;
+    }
+
+    private void sortProductList(DataSnapshot snapShot, final eSort orderBy){
+        Query filteredList;
+        DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference("products");
+        if(orderBy.equals(eSort.NAME)) {
+            filteredList = productsReference.orderByChild("name");
+        }
+        else {
+            filteredList = productsReference.orderByChild("price");
+        }
+
+        filteredList.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                updateProductList(snapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+
+        });
+    }
     }
 
     private void filterList(final CharSequence searchString) {
@@ -236,5 +285,47 @@ public class ProductListActivity extends AppCompatActivity {
     public void updateListView(List<ProductWithKey> prodList) {
         mProductList = prodList;
         mListView.setAdapter(new ProductsAdapter(mProductList,this,myUser));
+    }
+
+    private void filterProductList(DataSnapshot snapshot, final filterResult filterResult) {
+        Query filteredList;
+        DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference("products");
+        filteredList = productsReference.orderByChild("color");
+        if(filterResult.White)
+            filteredList = filteredList.equalTo("white");
+        if(filterResult.Red)
+            filteredList = filteredList.equalTo("red");
+        if(filterResult.Blue)
+            filteredList = filteredList.equalTo("blue");
+        filteredList = filteredList.orderByChild("category");
+        if(filterResult.Bags)
+            filteredList = filteredList.equalTo("bags");
+        if(filterResult.Shoes)
+            filteredList = filteredList.equalTo("shoes");
+        if(filterResult.Towels)
+            filteredList = filteredList.equalTo("towels");
+
+        filteredList.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                updateProductList(snapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+
+        });
+    }
+
+    private void updateProductList(DataSnapshot snapshot) {
+
+        mProductList.clear();
+        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+            Product product = dataSnapshot.getValue(Product.class);
+            String key = dataSnapshot.getKey();
+            mProductList.put(key, product);
+        }
+        updateListView(mProductList);
     }
 }
