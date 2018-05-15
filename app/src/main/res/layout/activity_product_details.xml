@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.noytse.loginfacebook.productDetails"
     android:orientation="vertical">
     <ImageView
+        android:id="@+id/prodDetail_prodPhoto"
         android:layout_width="115dp"
         android:layout_height="115dp"
         android:layout_gravity="center"
@@ -98,6 +98,7 @@
         android:text="15.99$"/>
 
     <Button
+        android:id="@+id/prodDetail_btnPurchase"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="purche now!"
@@ -106,17 +107,32 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="5dp"
-        android:background="@color/ReviewBackground_Reviews">
-        <TextView
+        android:background="@color/ReviewBackground_Reviews"
+        android:orientation="vertical">
+        <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/ReviewBackground_Title"
+            android:weightSum="100">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="86"
             android:layout_height="wrap_content"
             android:text="Reviews"
             android:textSize="20sp"
             android:gravity="center"
             android:textColor="@color/White"
             android:textStyle="bold"
-            android:padding="10dp"
-            android:background="@color/ReviewBackground_Title"/>
+            android:padding="10dp"/>
+            <Button
+                android:id="@+id/prodDetail_btnAddReview"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:background="@drawable/ic_add"
+                android:layout_marginBottom="6dp"
+                android:layout_weight="14"/>
+        </LinearLayout>
         <ListView
             android:id="@+id/prodDetail_reviewList"
             android:layout_width="match_parent"

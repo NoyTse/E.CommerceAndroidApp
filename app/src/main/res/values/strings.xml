@@ -2,4 +2,18 @@
     <string name="app_name">LoginFacebook</string>
     <string name="facebook_app_id">219480032153071</string>
     <string name="fb_login_protocol_scheme">fb219480032153071</string>
+    <string name="search_hind">type somthing..</string>
+    <string name="sort_message">Select field to order by</string>
+    <string name="sort_nameField">Product Name</string>
+    <string name="sort_priceField">Product Price</string>
+    <string name="filter_message">Select values to show</string>
+    <string name="filter_shoes">Shoes</string>
+    <string name="filter_towels">towels</string>
+    <string name="filter_bags">bags</string>
+    <string name="filter_blue">blue</string>
+    <string name="filter_white">white</string>
+    <string name="filter_red">red</string>
+    <string name="filter_category">Category</string>
+    <string name="filter_color">Color</string>
+    <string name="myItems">My Items</string>
 </resources>

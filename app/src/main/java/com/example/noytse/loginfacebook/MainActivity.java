@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.noytse.loginfacebook.model.User;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -19,11 +20,15 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.provider.FirebaseInitProvider;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static android.content.ContentValues.TAG;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Main Activity";
@@ -116,13 +121,32 @@ public class MainActivity extends AppCompatActivity {
 
     public void onLoggedInUser(FirebaseUser loggedInUser){
         if (loggedInUser != null) {
-            Intent userProfileIntent = new Intent(this,UserProfileActivity.class);
+        /*    Intent userProfileIntent = new Intent(this,UserProfileActivity.class);
             userProfileIntent.putExtra(UserProfileActivity.k_UserName, loggedInUser.getDisplayName());
             userProfileIntent.putExtra(UserProfileActivity.k_UserEmail, loggedInUser.getEmail());
             if (loggedInUser.getPhotoUrl() != null)
-                userProfileIntent.putExtra(UserProfileActivity.k_UserPhotoURL,loggedInUser.getPhotoUrl().toString());
-            startActivity(userProfileIntent);
+                userProfileIntent.putExtra(UserProfileActivity.k_UserPhotoURL,loggedInUser.getPhotoUrl().toString());*/
+            Intent productListIntent = new Intent(this,ProductListActivity.class);
+
+            createNewUser();
+            startActivity(productListIntent);
             finish();
         }
+    }
+    private void createNewUser() {
+
+        Log.e(TAG, "createNewUser() >>");
+
+        FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
+
+        if (fbUser == null) {
+            Log.e(TAG, "createNewUser() << Error user is null");
+            return;
+        }
+
+        userRef.child(fbUser.getUid()).setValue(new User(fbUser.getEmail(),0,null));
+
+        Log.e(TAG, "createNewUser() <<");
     }
 }

@@ -11,6 +11,7 @@
     <color name="ReviewBackground_Title">#90009900</color>
     <color name="ReviewBackground_Reviews">#ccffcc</color>
     <color name="White">#FFFFFF</color>
+    <color name="Transpernt">#00000000</color>
 
 
 </resources>
