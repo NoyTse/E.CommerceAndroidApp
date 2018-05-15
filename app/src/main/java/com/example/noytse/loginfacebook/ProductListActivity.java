@@ -11,6 +11,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -142,6 +143,26 @@ public class ProductListActivity extends AppCompatActivity {
         dialog.setContentView(R.layout.filter_dialog);
         dialog.setTitle("Filter");
 
+        final List<CheckBox> checkBoxList = new ArrayList<>();
+        checkBoxList.add((CheckBox)dialog.findViewById(R.id.checkbox_white));
+        checkBoxList.add((CheckBox)dialog.findViewById(R.id.checkbox_red));
+        checkBoxList.add((CheckBox)dialog.findViewById(R.id.checkbox_blue));
+        checkBoxList.add((CheckBox)dialog.findViewById(R.id.checkbox_towels));
+        checkBoxList.add((CheckBox)dialog.findViewById(R.id.checkbox_shoes));
+        checkBoxList.add((CheckBox)dialog.findViewById(R.id.checkbox_bags));
+
+        for(CheckBox checkBox : checkBoxList){
+            final CheckBox currCheckBox = checkBox;
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        for (CheckBox cb : checkBoxList){
+                            if (cb.getId() != currCheckBox.getId())
+                                cb.setEnabled(!b);
+                        }
+                    }
+            });
+        }
 
 
 
@@ -258,19 +279,24 @@ public class ProductListActivity extends AppCompatActivity {
     private void filterProductList(DataSnapshot snapshot, final filterResult filterResult) {
         Query filteredList;
         DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference("products");
-        filteredList = productsReference.orderByChild("color");
+
+        if (filterResult.White || filterResult.Red || filterResult.Blue)
+            filteredList = productsReference.orderByChild("color");
+        else
+            filteredList = productsReference.orderByChild("category");
+
         if(filterResult.White)
             filteredList = filteredList.equalTo("white");
-        if(filterResult.Red)
+        else if(filterResult.Red)
             filteredList = filteredList.equalTo("red");
-        if(filterResult.Blue)
+        else if(filterResult.Blue)
             filteredList = filteredList.equalTo("blue");
-        filteredList = filteredList.orderByChild("category");
-        if(filterResult.Bags)
+
+        else if(filterResult.Bags)
             filteredList = filteredList.equalTo("bags");
-        if(filterResult.Shoes)
+        else if(filterResult.Shoes)
             filteredList = filteredList.equalTo("shoes");
-        if(filterResult.Towels)
+        else if(filterResult.Towels)
             filteredList = filteredList.equalTo("towels");
 
         filteredList.addValueEventListener(new ValueEventListener() {
