@@ -30,8 +30,8 @@ public class ProductDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
         mProduct = (Product)this.getIntent().getSerializableExtra("Product");
-        user = getIntent().getParcelableExtra("user");
-        key = getIntent().getStringExtra("key");
+        user = getIntent().getParcelableExtra("User");
+        key = getIntent().getStringExtra("Key");
 
         ImageView imgProdPhoto = findViewById(R.id.prodDetail_prodPhoto);
         TextView lblProdName = findViewById(R.id.prodDetail_prodName);
@@ -59,12 +59,14 @@ public class ProductDetails extends AppCompatActivity {
 
 
         btnPurchase.setText("BUY $" + mProduct.getPrice());
-        Iterator i = user.getMyBags().iterator();
-        while (i.hasNext()) {
-            if (i.next().equals(key)) {
-                mBagWasPurchase = true;
-                btnPurchase.setText("On The Way To You");
-                break;
+        if(user != null) {
+            Iterator i = user.getMyBags().iterator();
+            while (i.hasNext()) {
+                if (i.next().equals(key)) {
+                    mBagWasPurchase = true;
+                    btnPurchase.setText("On The Way To You");
+                    break;
+                }
             }
         }
 
@@ -74,6 +76,7 @@ public class ProductDetails extends AppCompatActivity {
                 FirebaseAuth mAuth = FirebaseAuth.getInstance();
                 if(mAuth.getCurrentUser().isAnonymous()){
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.putExtra("isFromProductDetails", true);
                     intent.putExtra("isAnonymouse", true);
                     startActivity(intent);
                 }

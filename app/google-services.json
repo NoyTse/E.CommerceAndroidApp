@@ -15,6 +15,26 @@
       },
       "oauth_client": [
         {
+          "client_id": "13742759186-pv0nk5821fe79201sm2j7gig8onir8ps.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.noytse.loginfacebook",
+            "certificate_hash": "9e66fc435f0b619efa0f1c4423dbdc9a70a4cdd5"
+          }
+        },
+        {
+          "client_id": "13742759186-io5on76vb4qa1692prus5gkucnfk7fk5.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "13742759186-k9alldcjg2fhspkbsfiknmrost63jcjj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.noytse.loginfacebook",
+            "certificate_hash": "8b5268ee4648bc91ce20c6bd9b4754f5850681ca"
+          }
+        },
+        {
           "client_id": "13742759186-a5u050p4tdi67vq074jv991ajjpr2fe0.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -40,7 +60,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "13742759186-p3hndq0f36irh3shj783pujf7klfdcsc.apps.googleusercontent.com",
+              "client_id": "13742759186-io5on76vb4qa1692prus5gkucnfk7fk5.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

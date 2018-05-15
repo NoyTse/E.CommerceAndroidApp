@@ -45,8 +45,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        boolean isFromProductDetails = getIntent().getBooleanExtra("isFromProductDetails", false);
+        boolean isAnonymouse = getIntent().getBooleanExtra("isAnonymouse", false);
+
         checkAnonymouseEnable();
         mAuth = FirebaseAuth.getInstance();
+        if(isFromProductDetails && isAnonymouse){
+            mAuth.signOut();
+        }
+
         mFacebookLogin = new FacebookLogin(this,mAuth,(LoginButton)findViewById(R.id.facebookLoginBtn));
 
         mEmailPassLogin = new EmailPasswordLogin(this,mAuth);
