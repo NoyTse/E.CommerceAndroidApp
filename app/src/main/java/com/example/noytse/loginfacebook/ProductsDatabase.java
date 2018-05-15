@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class ProductsDatabase{
 
-    ArrayList<ProductWithKey> mProductsList = new ArrayList<>();
+    Map<String,ProductWithKey> mProductsList;
     private final String TAG = "Database";
     private User myUser;
     ProductListActivity productListActivity;
@@ -49,25 +49,24 @@ public class ProductsDatabase{
             Product product = dataSnapshot.getValue(Product.class);
             Log.e(TAG, "updateProductList >> adding product: " + product.getName());
             String key = dataSnapshot.getKey();
-            mProductsList.add(new ProductWithKey(product,key));
-            if (myUser != null){
-                    for (String id : myUser.getMyBags()){
-                        for (ProductWithKey prod : mProductsList) {
-                            if (prod.getKey().equals(id))
-                                prod.setPurchased(true);
-                        }
-                    }
+            ProductWithKey currentProduct = new ProductWithKey(product, key);
+
+            if (myUser != null) {
+                for (String id : myUser.getMyBags()) {
+                    currentProduct.setPurchased(true);
                 }
             }
+            mProductsList.put(currentProduct.getKey(),currentProduct);
             productListActivity.updateListView(mProductsList);
+        }
     }
 
 
-    public void setProductsList(ArrayList<ProductWithKey> mProductsList) {
+    public void setProductsList(Map<String,ProductWithKey> mProductsList) {
         this.mProductsList = mProductsList;
     }
 
-    public ArrayList<ProductWithKey> getmProductsList() {
+    public Map<String,ProductWithKey> getmProductsList() {
         return mProductsList;
     }
 }

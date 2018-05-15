@@ -16,6 +16,7 @@ import android.widget.ListView;
 import com.example.noytse.loginfacebook.model.Product;
 import com.example.noytse.loginfacebook.model.ProductWithKey;
 import com.example.noytse.loginfacebook.model.User;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,8 +25,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class ProductListActivity extends AppCompatActivity {
     private FirebaseUser mFirebaseUser;
@@ -35,7 +38,7 @@ public class ProductListActivity extends AppCompatActivity {
         NAME,
         PRICE
     };
-    private List<ProductWithKey> mProductList;
+    private Map<String,ProductWithKey> mProductList;
     private ListView mListView;
     private boolean mSearchVisible = false;
 
@@ -46,7 +49,7 @@ public class ProductListActivity extends AppCompatActivity {
 
         ProductsDatabase mDataBase = new ProductsDatabase(myUser,this); //fetch products from db
 
-
+        mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (mFirebaseUser != null) {
             final DatabaseReference myUserRef = FirebaseDatabase.getInstance().getReference("Users/" + mFirebaseUser.getUid());
 
@@ -58,10 +61,7 @@ public class ProductListActivity extends AppCompatActivity {
                     if (mProductList != null) {
                         //TODO update in mProductList for each product if purchased (from myUser keys)
                         for (String id : myUser.getMyBags()){
-                            for (ProductWithKey prod : mProductList) {
-                                if (prod.getKey().equals(id))
-                                    prod.setPurchased(true);
-                            }
+                            mProductList.get(id).setPurchased(true);
                         }
                     }
                     List<Product> prodListForShowing = new ArrayList<>();
@@ -130,7 +130,7 @@ public class ProductListActivity extends AppCompatActivity {
         });
     }
 
-    private List<ProductWithKey> getCurrentUserParchesedProductsList(FirebaseUser mFirebaseUser) {
+    private Map<String,ProductWithKey> getCurrentUserParchesedProductsList(FirebaseUser mFirebaseUser) {
         //TODO here should come the code that fetch only the products the user bought
         return mProductList;
     }
@@ -163,7 +163,7 @@ public class ProductListActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private List<ProductWithKey> getFilteredListFromFirebase(filterResult filterResult) {
+    private Map<String,ProductWithKey> getFilteredListFromFirebase(filterResult filterResult) {
         //TODO here should be the code that fetch filtered list from firebase
         return mProductList;
     }
@@ -188,38 +188,41 @@ public class ProductListActivity extends AppCompatActivity {
         dialogBuilder.create().show();
     }
 
-    private List<ProductWithKey> getSortedListFromFirebase(eSort orderBy) {
+    private Map<String,ProductWithKey> getSortedListFromFirebase(eSort orderBy) {
         //TODO
         //parameter orderBy (eSort.NAME     OR    eSort.PRICE)
         return mProductList;
     }
 
     private void filterList(final CharSequence searchString) {
-        List<ProductWithKey> filteredList = new ArrayList<>();
-        for (ProductWithKey prod : mProductList)
+        Map<String,ProductWithKey> filteredList = new HashMap<>();
+        for (String key : mProductList.keySet()){
+            ProductWithKey prod = mProductList.get(key);
             if (prod.getproduct().getName().contains(searchString) || prod.getproduct().getCategory().contains(searchString)
                     || prod.getproduct().getPrice().contains(searchString))
-                filteredList.add(prod);
+                filteredList.put(key,mProductList.get(key));
+        }
         mListView.setAdapter(new ProductsAdapter(filteredList,getApplicationContext(), myUser));
     }
 
-    private List<ProductWithKey> getProductList() {
-        //TODO here should be the code that fetch the data from the firebase storeage
+    private Map<String,ProductWithKey> getProductList() {
+        return null;
+        /*//TODO here should be the code that fetch the data from the firebase storeage
         ArrayList<Review> demoReviewList = new ArrayList<>();
         demoReviewList.add(new Review("Demo User Name", "Demo Review 1"));
         demoReviewList.add(new Review("Demo User Name", "Demo Review 2"));
         demoReviewList.add(new Review("Demo User Name", "Demo Review 3"));
         //temp implementation       DELETE WHEN IMPLEMENT
-        List<ProductWithKey> resList = new ArrayList<>();
+        Map<String,ProductWithKey> resList = new ArrayList<>();
 
         Product demoProd1 = new Product("p1","bags","blue","yes","150x50 cm","Meshi"
-                ,null,"15$",demoReviewList);
+                ,null,"15$",null);
         Product demoProd2 = new Product("p2","bags","red","yes","150x50 cm","Meshi"
-                ,null,"35$",demoReviewList);
+                ,null,"35$",null);
         Product demoProd3 = new Product("a3","Shoes","blue","yes","150x50 cm","Meshi"
-                ,null,"135$",demoReviewList);
+                ,null,"135$",null);
 
-
+*/
         //resList = getIntent().getBundleExtra("Products");
 
         //resList = (ArrayList<ProductWithKey>)getIntent().getSerializableExtra("Products");
@@ -230,10 +233,10 @@ public class ProductListActivity extends AppCompatActivity {
 //
 //        resList.add(new Product("a3","Shoes","blue","yes","150x50 cm","Meshi"
 //                ,null,"135$",demoReviewList));
-        return  resList;
+        //return  resList;
     }
 
-    public void updateListView(List<ProductWithKey> prodList) {
+    public void updateListView(Map<String,ProductWithKey> prodList) {
         mProductList = prodList;
         mListView.setAdapter(new ProductsAdapter(mProductList,this,myUser));
     }
