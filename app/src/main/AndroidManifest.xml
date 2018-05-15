@@ -42,6 +42,7 @@
         </activity>
         <activity android:name=".SignUpActivity" />
         <activity android:name=".ProductListActivity"/>
+        <activity android:name=".ProductDetails"/>
     </application>
 
 </manifest>
