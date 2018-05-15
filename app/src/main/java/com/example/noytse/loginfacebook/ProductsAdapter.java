@@ -15,6 +15,7 @@ import com.example.noytse.loginfacebook.model.ProductWithKey;
 import com.example.noytse.loginfacebook.model.User;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -73,7 +74,7 @@ public class ProductsAdapter extends BaseAdapter {
             public void onClick(View view) {
                 Intent prodDetailIntent = new Intent(mContext,ProductDetails.class);
                 prodDetailIntent.putExtra("Product",mProductList.get(N));
-                prodDetailIntent.putExtra("user",user);
+                prodDetailIntent.putExtra("user",(Serializable)user);
                 view.getContext().startActivity(prodDetailIntent);
             }
         });
