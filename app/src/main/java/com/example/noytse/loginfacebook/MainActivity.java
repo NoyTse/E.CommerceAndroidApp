@@ -139,8 +139,6 @@ public class MainActivity extends AppCompatActivity {
             Intent productListIntent = new Intent(this,ProductListActivity.class);
             //TODO try get user from db. on failed, create in the db new user
 
-            //createNewUser();
-
             startActivity(productListIntent);
             finish();
         }

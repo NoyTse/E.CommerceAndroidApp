@@ -133,8 +133,15 @@ public class ProductListActivity extends AppCompatActivity {
         });
     }
 
-    private Map<String,ProductWithKey> getCurrentUserParchesedProductsList(FirebaseUser mFirebaseUser) {
-        //TODO here should come the code that fetch only the products the user bought
+    private Map<String,ProductWithKey> getCurrentUserParchesedProductsList() {
+        Map<String, ProductWithKey> map = new HashMap<>();
+        getFilteredListFromFirebase(new filterResult());
+        for(String key: myUser.getMyBags()){
+            map.put(key, mProductList.get(key));
+        }
+        mProductList.clear();
+        mProductList.putAll(map);
+        updateListView(mProductList);
         return mProductList;
     }
 
