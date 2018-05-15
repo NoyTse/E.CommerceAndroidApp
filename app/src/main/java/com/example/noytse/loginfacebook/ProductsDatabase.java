@@ -24,7 +24,7 @@ public class ProductsDatabase{
     ArrayList<ProductWithKey> mProductsList = new ArrayList<>();
     private final String TAG = "Database";
 
-    public  ProductsDatabase(){
+    public ProductsDatabase(){
 
         DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference("products");
         productsReference.addValueEventListener(new ValueEventListener() {
