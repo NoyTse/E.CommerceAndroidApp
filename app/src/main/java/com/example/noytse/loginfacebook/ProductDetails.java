@@ -18,7 +18,7 @@ public class ProductDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
         mProduct = (Product)this.getIntent().getSerializableExtra("Product");
-
+        //asds
         ImageView imgProdPhoto = findViewById(R.id.prodDetail_prodPhoto);
         TextView lblProdName = findViewById(R.id.prodDetail_prodName);
         TextView lblCategory = findViewById(R.id.prodDetail_category);
