@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private AnonymouslyLogin mAnonymouslyLogin;
     private FirebaseAuth mAuth;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
+    private ProductsDatabase mDataBase;
     private boolean mAnonymouseEnable = true;
 
     @Override
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ProductsDatabase mDataBase = new ProductsDatabase();
         boolean isFromProductDetails = getIntent().getBooleanExtra("isFromProductDetails", false);
         boolean isAnonymouse = getIntent().getBooleanExtra("isAnonymouse", false);
 
