@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.noytse.loginfacebook.model.Product;
+import com.example.noytse.loginfacebook.model.ProductWithKey;
 import com.example.noytse.loginfacebook.model.User;
 import com.squareup.picasso.Picasso;
 
@@ -21,11 +22,11 @@ import java.util.List;
  */
 
 public class ProductsAdapter extends BaseAdapter {
-    private List<Product> mProductList;
+    private List<ProductWithKey> mProductList;
     private Context mContext;
     private User user;
 
-    public ProductsAdapter(List<Product> mProductList, Context mContext, User user) {
+    public ProductsAdapter(List<ProductWithKey> mProductList, Context mContext, User user) {
         this.mProductList = mProductList;
         this.mContext = mContext;
         this.user = user;
@@ -57,7 +58,7 @@ public class ProductsAdapter extends BaseAdapter {
         ImageView imgProductPhoto = view.findViewById(R.id.imgProductPhoto);
 
 
-        final Product currentProduct = mProductList.get(i);
+        final Product currentProduct = mProductList.get(i).getBag();
         txtProductName.setText(currentProduct.getName());
         txtCategory.setText(currentProduct.getCategory());
         txtPrice.setText(currentProduct.getPrice());
