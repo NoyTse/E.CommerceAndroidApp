@@ -16,17 +16,18 @@ import com.example.noytse.loginfacebook.model.User;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by NoyTse on 14/05/2018.
  */
 
 public class ProductsAdapter extends BaseAdapter {
-    private List<ProductWithKey> mProductList;
+    private Map<String,ProductWithKey> mProductList;
     private Context mContext;
     private User user;
 
-    public ProductsAdapter(List<ProductWithKey> mProductList, Context mContext, User user) {
+    public ProductsAdapter(Map<String,ProductWithKey> mProductList, Context mContext, User user) {
         this.mProductList = mProductList;
         this.mContext = mContext;
         this.user = user;
@@ -57,7 +58,7 @@ public class ProductsAdapter extends BaseAdapter {
         TextView txtPrice = view.findViewById(R.id.lblProdPrice);
         ImageView imgProductPhoto = view.findViewById(R.id.imgProductPhoto);
 
-
+        final int N = i;
         final Product currentProduct = mProductList.get(i).getproduct();
         txtProductName.setText(currentProduct.getName());
         txtCategory.setText(currentProduct.getCategory());
@@ -69,9 +70,8 @@ public class ProductsAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 Intent prodDetailIntent = new Intent(mContext,ProductDetails.class);
-                prodDetailIntent.putExtra("Product",currentProduct);
-                prodDetailIntent.putExtra("User", user);
-                prodDetailIntent.putExtra("Key", "hello");
+                prodDetailIntent.putExtra("Product",mProductList.get(N));
+                prodDetailIntent.putExtra("user",user);
                 view.getContext().startActivity(prodDetailIntent);
             }
         });

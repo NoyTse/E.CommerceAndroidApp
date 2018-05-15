@@ -3,12 +3,13 @@ package com.example.noytse.loginfacebook.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class User implements Parcelable {
+public class User implements Serializable {
     private String email;
-    private int totalPurchase;
+    private float totalPurchase;
     private List<String> myBags = new ArrayList<>();
 
     public User(){}
@@ -29,7 +30,7 @@ public class User implements Parcelable {
     }
 
 
-    public void upgdateTotalPurchase(int newPurcahsePrice) {
+    public void upgdateTotalPurchase(float newPurcahsePrice) {
         this.totalPurchase += newPurcahsePrice;
     }
 
@@ -37,7 +38,7 @@ public class User implements Parcelable {
         return myBags;
     }
 
-    public static final Creator<User> CREATOR = new Creator<User>() {
+    /*public static final Creator<User> CREATOR = new Creator<User>() {
         @Override
         public User createFromParcel(Parcel in) {
             return new User(in);
@@ -57,7 +58,7 @@ public class User implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(email);
-        parcel.writeInt(totalPurchase);
+        parcel.writeFloat(totalPurchase);
         parcel.writeStringList(myBags);
-    }
+    }*/
 }

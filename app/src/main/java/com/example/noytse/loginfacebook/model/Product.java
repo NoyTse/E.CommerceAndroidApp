@@ -3,6 +3,7 @@ package com.example.noytse.loginfacebook.model;
 import com.example.noytse.loginfacebook.Review;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,9 +19,10 @@ public class Product implements Serializable {
     private String material;
     private String photoURL;
     private String price;
-    //private List<Review> reviewList;
+    //private ArrayList<Review> reviewList = new ArrayList<>();
 
-    public Product(String name, String category, String color, String availableInStock, String size, String material, String photoURL, String price, List<Review> reviewList) {
+    public Product(){}
+    public Product(String name, String category, String color, String availableInStock, String size, String material, String photoURL, String price, ArrayList<Review> reviewList) {
         this.name = name;
         this.category = category;
         this.color = color;
@@ -29,7 +31,7 @@ public class Product implements Serializable {
         this.material = material;
         this.photoURL = photoURL;
         this.price = price;
-        //this.reviewList = reviewList;
+      //  this.reviewList = reviewList;
     }
 
     public String getCategory() {
@@ -96,11 +98,11 @@ public class Product implements Serializable {
         this.price = price;
     }
 
-    //public List<Review> getReviewList() {
-    //    return reviewList;
-    //}
+    /*public ArrayList<Review> getReviewList() {
+        return reviewList;
+    }
 
-    //public void setReviewList(List<Review> reviewList) {
-    //    this.reviewList = reviewList;
-    //}
+    public void setReviewList(ArrayList<Review> reviewList) {
+        this.reviewList = reviewList;
+    }*/
 }

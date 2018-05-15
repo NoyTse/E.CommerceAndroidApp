@@ -32,8 +32,7 @@ public class ProductDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
         mProduct = (ProductWithKey) this.getIntent().getSerializableExtra("Product");
-        user = getIntent().getParcelableExtra("User");
-        key = getIntent().getStringExtra("Key");
+        user = (User)this.getIntent().getSerializableExtra("user");
 
         ImageView imgProdPhoto = findViewById(R.id.prodDetail_prodPhoto);
         TextView lblProdName = findViewById(R.id.prodDetail_prodName);
@@ -58,7 +57,7 @@ public class ProductDetails extends AppCompatActivity {
         lblMaterial.setText(prodDetails.getMaterial());
         lblPrice.setText(prodDetails.getPrice());
 
-        btnPurchase.setEnabled(mProduct.isPurchased());
+        btnPurchase.setEnabled(!mProduct.isPurchased());
         //TODO set adapter to reviewListView
 
         /*if(user != null) {
@@ -86,7 +85,7 @@ public class ProductDetails extends AppCompatActivity {
                 else{
                     if (!mProduct.isPurchased()) {
                         mProduct.setPurchased(true);
-                        user.upgdateTotalPurchase(Integer.parseInt(mProduct.getproduct().getPrice()));
+                        user.upgdateTotalPurchase(Float.parseFloat(mProduct.getproduct().getPrice().replace("$","")));
                         //Save in db
                         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
                         userRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user);
