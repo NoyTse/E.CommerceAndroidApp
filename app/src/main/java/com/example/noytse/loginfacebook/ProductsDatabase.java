@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class ProductsDatabase{
 
-    Map<String,ProductWithKey> mProductsList;
+    Map<String,ProductWithKey> mProductsList = new HashMap<>();
     private final String TAG = "Database";
     private User myUser;
     ProductListActivity productListActivity;

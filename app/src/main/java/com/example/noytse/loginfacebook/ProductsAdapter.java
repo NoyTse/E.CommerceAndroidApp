@@ -23,11 +23,11 @@ import java.util.Map;
  */
 
 public class ProductsAdapter extends BaseAdapter {
-    private Map<String,ProductWithKey> mProductList;
+    private List<ProductWithKey> mProductList;
     private Context mContext;
     private User user;
 
-    public ProductsAdapter(Map<String,ProductWithKey> mProductList, Context mContext, User user) {
+    public ProductsAdapter(List<ProductWithKey> mProductList, Context mContext, User user) {
         this.mProductList = mProductList;
         this.mContext = mContext;
         this.user = user;
@@ -57,12 +57,14 @@ public class ProductsAdapter extends BaseAdapter {
         TextView txtCategory = view.findViewById(R.id.lblProdCategory);
         TextView txtPrice = view.findViewById(R.id.lblProdPrice);
         ImageView imgProductPhoto = view.findViewById(R.id.imgProductPhoto);
+        TextView lblKey = view.findViewById(R.id.key);
 
         final int N = i;
         final Product currentProduct = mProductList.get(i).getproduct();
         txtProductName.setText(currentProduct.getName());
         txtCategory.setText(currentProduct.getCategory());
         txtPrice.setText(currentProduct.getPrice());
+        lblKey.setText(mProductList.get(i).getKey());
         if (currentProduct.getPhotoURL() != null)
             Picasso.with(mContext).load(currentProduct.getPhotoURL()).into(imgProductPhoto);
 
