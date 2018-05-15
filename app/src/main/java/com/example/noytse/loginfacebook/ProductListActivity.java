@@ -38,7 +38,7 @@ public class ProductListActivity extends AppCompatActivity {
         NAME,
         PRICE
     };
-    private Map<String,ProductWithKey> mProductList;
+    private Map<String,ProductWithKey> mProductList = new HashMap<>();
     private ListView mListView;
     private boolean mSearchVisible = false;
 
@@ -65,7 +65,7 @@ public class ProductListActivity extends AppCompatActivity {
                         }
                     }
                     List<Product> prodListForShowing = new ArrayList<>();
-                    mListView.setAdapter(new ProductsAdapter(mProductList,getApplicationContext(),myUser));
+                    mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),getApplicationContext(),myUser));
                 }
 
                 @Override
@@ -79,7 +79,7 @@ public class ProductListActivity extends AppCompatActivity {
 
         mProductList = getProductList();
         mListView = findViewById(R.id.listView_Products);
-        mListView.setAdapter(new ProductsAdapter(mProductList,this, myUser));
+        mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),this, myUser));
 
         //Search bar visibilty handling
         findViewById(R.id.viewSearchLayout).setVisibility(mSearchVisible ? View.VISIBLE : View.GONE);
@@ -125,7 +125,7 @@ public class ProductListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mProductList = getCurrentUserParchesedProductsList(mFirebaseUser);
-                mListView.setAdapter(new ProductsAdapter(mProductList,getApplicationContext(), myUser));
+                mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),getApplicationContext(), myUser));
             }
         });
     }
@@ -156,7 +156,7 @@ public class ProductListActivity extends AppCompatActivity {
                 filterResult.White= ((CheckBox)dialog.findViewById(R.id.checkbox_white)).isChecked();
 
                 mProductList = getFilteredListFromFirebase(filterResult);
-                mListView.setAdapter(new ProductsAdapter(mProductList,view.getContext(), myUser));
+                mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),view.getContext(), myUser));
                 dialog.dismiss();
             }
         });
@@ -175,14 +175,14 @@ public class ProductListActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         mProductList = getSortedListFromFirebase(eSort.NAME);
-                        mListView.setAdapter(new ProductsAdapter(mProductList,getBaseContext(), myUser));
+                        mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),getBaseContext(), myUser));
                     }
                 })
                 .setNegativeButton(R.string.sort_priceField, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 mProductList = getSortedListFromFirebase(eSort.PRICE);
-                mListView.setAdapter(new ProductsAdapter(mProductList,getBaseContext(), myUser));
+                mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),getBaseContext(), myUser));
             }
         });
         dialogBuilder.create().show();
@@ -202,11 +202,11 @@ public class ProductListActivity extends AppCompatActivity {
                     || prod.getproduct().getPrice().contains(searchString))
                 filteredList.put(key,mProductList.get(key));
         }
-        mListView.setAdapter(new ProductsAdapter(filteredList,getApplicationContext(), myUser));
+        mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(filteredList.values()),getApplicationContext(), myUser));
     }
 
     private Map<String,ProductWithKey> getProductList() {
-        return null;
+        return new HashMap<>();
         /*//TODO here should be the code that fetch the data from the firebase storeage
         ArrayList<Review> demoReviewList = new ArrayList<>();
         demoReviewList.add(new Review("Demo User Name", "Demo Review 1"));
@@ -238,6 +238,6 @@ public class ProductListActivity extends AppCompatActivity {
 
     public void updateListView(Map<String,ProductWithKey> prodList) {
         mProductList = prodList;
-        mListView.setAdapter(new ProductsAdapter(mProductList,this,myUser));
+        mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),this,myUser));
     }
 }
