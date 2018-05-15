@@ -11,6 +11,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -67,7 +68,7 @@ public class ProductListActivity extends AppCompatActivity {
                         }
                     }
                     List<Product> prodListForShowing = new ArrayList<>();
-                    mListView.setAdapter(new ProductsAdapter(mProductList,getApplicationContext(),myUser));
+                    mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),getApplicationContext(),myUser));
                 }
 
                 @Override
@@ -81,7 +82,7 @@ public class ProductListActivity extends AppCompatActivity {
 
         mProductList = getProductList();
         mListView = findViewById(R.id.listView_Products);
-        mListView.setAdapter(new ProductsAdapter(mProductList,this, myUser));
+        mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),this, myUser));
 
         //Search bar visibilty handling
         findViewById(R.id.viewSearchLayout).setVisibility(mSearchVisible ? View.VISIBLE : View.GONE);
@@ -126,8 +127,8 @@ public class ProductListActivity extends AppCompatActivity {
         findViewById(R.id.productList_btnMyItems).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mProductList = getCurrentUserParchesedProductsList();
-                mListView.setAdapter(new ProductsAdapter(mProductList,getApplicationContext(), myUser));
+                mProductList = getCurrentUserParchesedProductsList(mFirebaseUser);
+                mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),getApplicationContext(), myUser));
             }
         });
     }
@@ -149,6 +150,26 @@ public class ProductListActivity extends AppCompatActivity {
         dialog.setContentView(R.layout.filter_dialog);
         dialog.setTitle("Filter");
 
+        final List<CheckBox> checkBoxList = new ArrayList<>();
+        checkBoxList.add((CheckBox)dialog.findViewById(R.id.checkbox_white));
+        checkBoxList.add((CheckBox)dialog.findViewById(R.id.checkbox_red));
+        checkBoxList.add((CheckBox)dialog.findViewById(R.id.checkbox_blue));
+        checkBoxList.add((CheckBox)dialog.findViewById(R.id.checkbox_towels));
+        checkBoxList.add((CheckBox)dialog.findViewById(R.id.checkbox_shoes));
+        checkBoxList.add((CheckBox)dialog.findViewById(R.id.checkbox_bags));
+
+        for(CheckBox checkBox : checkBoxList){
+            final CheckBox currCheckBox = checkBox;
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        for (CheckBox cb : checkBoxList){
+                            if (cb.getId() != currCheckBox.getId())
+                                cb.setEnabled(!b);
+                        }
+                    }
+            });
+        }
 
 
 
@@ -164,15 +185,14 @@ public class ProductListActivity extends AppCompatActivity {
                 filterResult.Towels= ((CheckBox)dialog.findViewById(R.id.checkbox_towels)).isChecked();
                 filterResult.White= ((CheckBox)dialog.findViewById(R.id.checkbox_white)).isChecked();
 
-                mProductList = getFilteredListFromFirebase(filterResult);
-                mListView.setAdapter(new ProductsAdapter(mProductList,view.getContext(), myUser));
+                getFilteredListFromFirebase(filterResult);
                 dialog.dismiss();
             }
         });
         dialog.show();
     }
 
-    private Map<String,ProductWithKey> getFilteredListFromFirebase(final filterResult filterResult) {
+    private void getFilteredListFromFirebase(final filterResult filterResult) {
         DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference("products");
         productsReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -184,9 +204,6 @@ public class ProductListActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-
-        //TODO here should be the code that fetch filtered list from firebase
-        return mProductList;
     }
 
     private void showSortDialog() {
@@ -195,21 +212,19 @@ public class ProductListActivity extends AppCompatActivity {
                 .setPositiveButton(R.string.sort_nameField, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        mProductList = getSortedListFromFirebase(eSort.NAME);
-                        mListView.setAdapter(new ProductsAdapter(mProductList,getBaseContext(), myUser));
+                        getSortedListFromFirebase(eSort.NAME);
                     }
                 })
                 .setNegativeButton(R.string.sort_priceField, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                mProductList = getSortedListFromFirebase(eSort.PRICE);
-                mListView.setAdapter(new ProductsAdapter(mProductList,getBaseContext(), myUser));
+                getSortedListFromFirebase(eSort.PRICE);
             }
         });
         dialogBuilder.create().show();
     }
 
-    private Map<String ,ProductWithKey> getSortedListFromFirebase(final eSort orderBy) {
+    private void getSortedListFromFirebase(final eSort orderBy) {
         DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference("products");
         productsReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -222,7 +237,6 @@ public class ProductListActivity extends AppCompatActivity {
             }
         });
         //parameter orderBy (eSort.NAME     OR    eSort.PRICE)
-        return mProductList;
     }
 
     private void sortProductList(DataSnapshot snapShot, final eSort orderBy){
@@ -256,7 +270,7 @@ public class ProductListActivity extends AppCompatActivity {
                     || prod.getproduct().getPrice().contains(searchString))
                 filteredList.put(key,mProductList.get(key));
         }
-        mListView.setAdapter(new ProductsAdapter(filteredList,getApplicationContext(), myUser));
+        mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(filteredList.values()),getApplicationContext(), myUser));
     }
 
     private Map<String,ProductWithKey> getProductList() {
@@ -266,24 +280,30 @@ public class ProductListActivity extends AppCompatActivity {
 
     public void updateListView(Map<String,ProductWithKey> prodList) {
         mProductList = prodList;
-        mListView.setAdapter(new ProductsAdapter(mProductList,this,myUser));
+        mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),this,myUser));
     }
 
     private void filterProductList(DataSnapshot snapshot, final filterResult filterResult) {
         Query filteredList;
         DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference("products");
-        filteredList = productsReference.orderByChild("color");
+
+        if (filterResult.White || filterResult.Red || filterResult.Blue)
+            filteredList = productsReference.orderByChild("color");
+        else
+            filteredList = productsReference.orderByChild("category");
+
         if(filterResult.White)
             filteredList = filteredList.equalTo("white");
         else if(filterResult.Red)
             filteredList = filteredList.equalTo("red");
         else if(filterResult.Blue)
             filteredList = filteredList.equalTo("blue");
-        if(filterResult.Bags)
+
+        else if(filterResult.Bags)
             filteredList = filteredList.equalTo("bags");
-        if(filterResult.Shoes)
+        else if(filterResult.Shoes)
             filteredList = filteredList.equalTo("shoes");
-        if(filterResult.Towels)
+        else if(filterResult.Towels)
             filteredList = filteredList.equalTo("towels");
 
         filteredList.addValueEventListener(new ValueEventListener() {
