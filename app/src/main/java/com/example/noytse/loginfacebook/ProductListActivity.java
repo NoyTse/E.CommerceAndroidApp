@@ -126,14 +126,21 @@ public class ProductListActivity extends AppCompatActivity {
         findViewById(R.id.productList_btnMyItems).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mProductList = getCurrentUserParchesedProductsList(mFirebaseUser);
+                mProductList = getCurrentUserParchesedProductsList();
                 mListView.setAdapter(new ProductsAdapter(mProductList,getApplicationContext(), myUser));
             }
         });
     }
 
-    private Map<String,ProductWithKey> getCurrentUserParchesedProductsList(FirebaseUser mFirebaseUser) {
-        //TODO here should come the code that fetch only the products the user bought
+    private Map<String,ProductWithKey> getCurrentUserParchesedProductsList() {
+        Map<String, ProductWithKey> map = new HashMap<>();
+        getFilteredListFromFirebase(new filterResult());
+        for(String key: myUser.getMyBags()){
+            map.put(key, mProductList.get(key));
+        }
+        mProductList.clear();
+        mProductList.putAll(map);
+        updateListView(mProductList);
         return mProductList;
     }
 
@@ -268,11 +275,10 @@ public class ProductListActivity extends AppCompatActivity {
         filteredList = productsReference.orderByChild("color");
         if(filterResult.White)
             filteredList = filteredList.equalTo("white");
-        if(filterResult.Red)
+        else if(filterResult.Red)
             filteredList = filteredList.equalTo("red");
-        if(filterResult.Blue)
+        else if(filterResult.Blue)
             filteredList = filteredList.equalTo("blue");
-        filteredList = filteredList.orderByChild("category");
         if(filterResult.Bags)
             filteredList = filteredList.equalTo("bags");
         if(filterResult.Shoes)
