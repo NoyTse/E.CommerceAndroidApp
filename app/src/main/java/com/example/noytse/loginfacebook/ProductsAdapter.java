@@ -58,20 +58,20 @@ public class ProductsAdapter extends BaseAdapter {
         ImageView imgProductPhoto = view.findViewById(R.id.imgProductPhoto);
 
 
-        final Product currentProduct = mProductList.get(i).getBag();
-        txtProductName.setText(currentProduct.getName());
-        txtCategory.setText(currentProduct.getCategory());
-        txtPrice.setText(currentProduct.getPrice());
-        if (currentProduct.getPhotoURL() != null)
-            Picasso.with(mContext).load(currentProduct.getPhotoURL()).into(imgProductPhoto);
+        final ProductWithKey currentProduct = mProductList.get(i);
+        txtProductName.setText(currentProduct.getBag().getName());
+        txtCategory.setText(currentProduct.getBag().getCategory());
+        txtPrice.setText(currentProduct.getBag().getPrice());
+        if (currentProduct.getBag().getPhotoURL() != null)
+            Picasso.with(mContext).load(currentProduct.getBag().getPhotoURL()).into(imgProductPhoto);
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent prodDetailIntent = new Intent(mContext,ProductDetails.class);
-                prodDetailIntent.putExtra("Product",currentProduct);
+                prodDetailIntent.putExtra("Product",currentProduct.getBag());
                 prodDetailIntent.putExtra("User", user);
-                prodDetailIntent.putExtra("Key", "hello");
+                prodDetailIntent.putExtra("Key", currentProduct.getKey());
                 view.getContext().startActivity(prodDetailIntent);
             }
         });
