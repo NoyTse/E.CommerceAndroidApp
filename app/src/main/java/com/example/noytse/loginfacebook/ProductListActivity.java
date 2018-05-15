@@ -188,17 +188,20 @@ public class ProductListActivity extends AppCompatActivity {
 
     private List<Product> getProductList() {
         //TODO here should be the code that fetch the data from the firebase storeage
-
+        ArrayList<Review> demoReviewList = new ArrayList<>();
+        demoReviewList.add(new Review("Demo User Name", "Demo Review 1"));
+        demoReviewList.add(new Review("Demo User Name", "Demo Review 2"));
+        demoReviewList.add(new Review("Demo User Name", "Demo Review 3"));
         //temp implementation       DELETE WHEN IMPLEMENT
         List<Product> resList = new ArrayList<>();
         resList.add(new Product("p1","bags","blue","yes","150x50 cm","Meshi"
-                ,null,"15$",null));
+                ,null,"15$",demoReviewList));
 
         resList.add(new Product("p2","bags","red","yes","150x50 cm","Meshi"
-                ,null,"35$",null));
+                ,null,"35$",demoReviewList));
 
         resList.add(new Product("a3","Shoes","blue","yes","150x50 cm","Meshi"
-                ,null,"135$",null));
+                ,null,"135$",demoReviewList));
         return  resList;
     }
 }
