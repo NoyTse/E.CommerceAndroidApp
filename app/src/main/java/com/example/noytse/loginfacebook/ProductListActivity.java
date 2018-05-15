@@ -3,6 +3,7 @@ package com.example.noytse.loginfacebook;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.support.constraint.solver.widgets.Snapshot;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -22,6 +23,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -188,10 +190,43 @@ public class ProductListActivity extends AppCompatActivity {
         dialogBuilder.create().show();
     }
 
-    private Map<String,ProductWithKey> getSortedListFromFirebase(eSort orderBy) {
-        //TODO
+    private List<ProductWithKey> getSortedListFromFirebase(final eSort orderBy) {
+        DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference("products");
+        productsReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                sortProductList(snapshot, orderBy);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
         //parameter orderBy (eSort.NAME     OR    eSort.PRICE)
         return mProductList;
+    }
+
+    private void sortProductList(DataSnapshot snapShot, final eSort orderBy){
+        Query filteredList;
+        DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference("products");
+        if(orderBy.equals(eSort.NAME)) {
+            filteredList = productsReference.orderByChild("name");
+        }
+        else {
+            filteredList = productsReference.orderByChild("price");
+        }
+
+        filteredList.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                updateProductList(snapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+
+        });
     }
 
     private void filterList(final CharSequence searchString) {
@@ -234,10 +269,54 @@ public class ProductListActivity extends AppCompatActivity {
 //        resList.add(new Product("a3","Shoes","blue","yes","150x50 cm","Meshi"
 //                ,null,"135$",demoReviewList));
         //return  resList;
+        return new HashMap<>();
+        //TODO here should be the code that fetch the data from the firebase storeage
     }
 
     public void updateListView(Map<String,ProductWithKey> prodList) {
         mProductList = prodList;
         mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),this,myUser));
+    }
+
+    private void filterProductList(DataSnapshot snapshot, final filterResult filterResult) {
+        Query filteredList;
+        DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference("products");
+        filteredList = productsReference.orderByChild("color");
+        if(filterResult.White)
+            filteredList = filteredList.equalTo("white");
+        if(filterResult.Red)
+            filteredList = filteredList.equalTo("red");
+        if(filterResult.Blue)
+            filteredList = filteredList.equalTo("blue");
+        filteredList = filteredList.orderByChild("category");
+        if(filterResult.Bags)
+            filteredList = filteredList.equalTo("bags");
+        if(filterResult.Shoes)
+            filteredList = filteredList.equalTo("shoes");
+        if(filterResult.Towels)
+            filteredList = filteredList.equalTo("towels");
+
+        filteredList.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                updateProductList(snapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+
+        });
+    }
+
+    private void updateProductList(DataSnapshot snapshot) {
+
+        mProductList.clear();
+        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+            Product product = dataSnapshot.getValue(Product.class);
+            String key = dataSnapshot.getKey();
+            mProductList.put(key, product);
+        }
+        updateListView(mProductList);
     }
 }
