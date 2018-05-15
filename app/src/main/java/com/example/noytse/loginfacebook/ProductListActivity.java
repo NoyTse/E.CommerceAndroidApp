@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ProductListActivity extends AppCompatActivity {
@@ -43,19 +44,26 @@ public class ProductListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_list);
 
+        ProductsDatabase mDataBase = new ProductsDatabase(myUser,this); //fetch products from db
+
 
         if (mFirebaseUser != null) {
-            DatabaseReference myUserRef = FirebaseDatabase.getInstance().getReference("Users/" + mFirebaseUser.getUid());
+            final DatabaseReference myUserRef = FirebaseDatabase.getInstance().getReference("Users/" + mFirebaseUser.getUid());
 
             myUserRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
 
                     myUser = snapshot.getValue(User.class);
-                    //mProductList = products list (With keys) from db
-                    // + if products before user: set the boolean member of ProductWithKey  (isPurchased).
-
-                    //
+                    if (mProductList != null) {
+                        //TODO update in mProductList for each product if purchased (from myUser keys)
+                        for (String id : myUser.getMyBags()){
+                            for (ProductWithKey prod : mProductList) {
+                                if (prod.getKey().equals(id))
+                                    prod.setPurchased(true);
+                            }
+                        }
+                    }
                     List<Product> prodListForShowing = new ArrayList<>();
                     mListView.setAdapter(new ProductsAdapter(mProductList,getApplicationContext(),myUser));
                 }
@@ -65,6 +73,8 @@ public class ProductListActivity extends AppCompatActivity {
                 }
             });
         }
+
+
 
 
         mProductList = getProductList();
@@ -221,5 +231,10 @@ public class ProductListActivity extends AppCompatActivity {
 //        resList.add(new Product("a3","Shoes","blue","yes","150x50 cm","Meshi"
 //                ,null,"135$",demoReviewList));
         return  resList;
+    }
+
+    public void updateListView(List<ProductWithKey> prodList) {
+        mProductList = prodList;
+        mListView.setAdapter(new ProductsAdapter(mProductList,this,myUser));
     }
 }

@@ -9,8 +9,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.noytse.loginfacebook.model.Product;
+import com.example.noytse.loginfacebook.model.ProductWithKey;
 import com.example.noytse.loginfacebook.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -22,14 +24,14 @@ import java.util.Iterator;
 public class ProductDetails extends AppCompatActivity {
     User user;
     String key;
-    Product mProduct;
+    ProductWithKey mProduct;
     boolean mBagWasPurchase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
-        mProduct = (Product)this.getIntent().getSerializableExtra("Product");
+        mProduct = (ProductWithKey) this.getIntent().getSerializableExtra("Product");
         user = getIntent().getParcelableExtra("User");
         key = getIntent().getStringExtra("Key");
 
@@ -45,30 +47,31 @@ public class ProductDetails extends AppCompatActivity {
         Button btnAddReview = findViewById(R.id.prodDetail_btnAddReview);
         ListView reviewListView = findViewById(R.id.prodDetail_reviewList);
 
-        if (mProduct.getPhotoURL() != null)
-            Picasso.with(this).load(mProduct.getPhotoURL()).into(imgProdPhoto);
-        lblProdName.setText(mProduct.getName());
-        lblCategory.setText(mProduct.getCategory());
-        lblColor.setText(mProduct.getColor());
-        lblExist.setText(mProduct.getAvailableInStock());
-        lblSize.setText(mProduct.getSize());
-        lblMaterial.setText(mProduct.getMaterial());
-        lblPrice.setText(mProduct.getPrice());
+        Product prodDetails = mProduct.getproduct();
+        if (prodDetails.getPhotoURL() != null)
+            Picasso.with(this).load(prodDetails.getPhotoURL()).into(imgProdPhoto);
+        lblProdName.setText(prodDetails.getName());
+        lblCategory.setText(prodDetails.getCategory());
+        lblColor.setText(prodDetails.getColor());
+        lblExist.setText(prodDetails.getAvailableInStock());
+        lblSize.setText(prodDetails.getSize());
+        lblMaterial.setText(prodDetails.getMaterial());
+        lblPrice.setText(prodDetails.getPrice());
 
+        btnPurchase.setEnabled(mProduct.isPurchased());
         //TODO set adapter to reviewListView
 
-
-        btnPurchase.setText("BUY $" + mProduct.getPrice());
-        if(user != null) {
+        /*if(user != null) {
             Iterator i = user.getMyBags().iterator();
             while (i.hasNext()) {
                 if (i.next().equals(key)) {
-                    mBagWasPurchase = true;
-                    btnPurchase.setText("On The Way To You");
+                    mProduct.setPurchased(true);
+                    btnPurchase.setEnabled(false);
+                    Toast.makeText(this,"On The Way To You",Toast.LENGTH_SHORT).show();
                     break;
                 }
             }
-        }
+        }*/
 
         btnPurchase.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,15 +84,14 @@ public class ProductDetails extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else{
-                    if (mBagWasPurchase) {
-
-                    } else {
-                        user.getMyBags().add(key);
-                        user.upgdateTotalPurchase(Integer.parseInt(mProduct.getPrice()));
+                    if (!mProduct.isPurchased()) {
+                        mProduct.setPurchased(true);
+                        user.upgdateTotalPurchase(Integer.parseInt(mProduct.getproduct().getPrice()));
+                        //Save in db
                         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
                         userRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user);
-                        mBagWasPurchase = true;
-                        btnPurchase.setText("On The Way To You");
+
+                        btnPurchase.setEnabled(false);
                     }
                 }
             }

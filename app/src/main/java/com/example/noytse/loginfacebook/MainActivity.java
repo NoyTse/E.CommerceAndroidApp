@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ProductsDatabase mDataBase = new ProductsDatabase();
+
         boolean isFromProductDetails = getIntent().getBooleanExtra("isFromProductDetails", false);
         boolean isAnonymouse = getIntent().getBooleanExtra("isAnonymouse", false);
 
@@ -136,8 +136,10 @@ public class MainActivity extends AppCompatActivity {
             if (loggedInUser.getPhotoUrl() != null)
                 userProfileIntent.putExtra(UserProfileActivity.k_UserPhotoURL,loggedInUser.getPhotoUrl().toString());*/
             Intent productListIntent = new Intent(this,ProductListActivity.class);
+            //TODO try get user from db. on failed, create in the db new user
 
-            createNewUser();
+            //createNewUser();
+
             startActivity(productListIntent);
             finish();
         }

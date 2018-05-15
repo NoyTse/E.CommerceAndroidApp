@@ -6,7 +6,7 @@ public class ProductWithKey implements Serializable {
     private Product product;
     private boolean purchased;
 
-    public ProductWithKey(Product product, boolean purchased, String key) {
+    public ProductWithKey(Product product, String key) {
         this.product = product;
         this.purchased = purchased;
         this.key = key;

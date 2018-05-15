@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.example.noytse.loginfacebook.model.Product;
 import com.example.noytse.loginfacebook.model.ProductWithKey;
+import com.example.noytse.loginfacebook.model.User;
 import com.google.android.gms.common.util.ProcessUtils;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,9 +24,11 @@ public class ProductsDatabase{
 
     ArrayList<ProductWithKey> mProductsList = new ArrayList<>();
     private final String TAG = "Database";
+    private User myUser;
+    ProductListActivity productListActivity;
 
-    public ProductsDatabase(){
-
+    public ProductsDatabase(User myUser,ProductListActivity activity){
+        productListActivity = activity;
         DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference("products");
         productsReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -46,11 +49,19 @@ public class ProductsDatabase{
             Product product = dataSnapshot.getValue(Product.class);
             Log.e(TAG, "updateProductList >> adding product: " + product.getName());
             String key = dataSnapshot.getKey();
-            //if user before products: check if user parchased the product <=> userKeys[].contain(key)
-            boolean userParchasedTheProduct = true;
-            mProductsList.add(new ProductWithKey(product,userParchasedTheProduct,key));
-        }
+            mProductsList.add(new ProductWithKey(product,key));
+            if (myUser != null){
+                    for (String id : myUser.getMyBags()){
+                        for (ProductWithKey prod : mProductsList) {
+                            if (prod.getKey().equals(id))
+                                prod.setPurchased(true);
+                        }
+                    }
+                }
+            }
+            productListActivity.updateListView(mProductsList);
     }
+
 
     public void setProductsList(ArrayList<ProductWithKey> mProductsList) {
         this.mProductsList = mProductsList;
