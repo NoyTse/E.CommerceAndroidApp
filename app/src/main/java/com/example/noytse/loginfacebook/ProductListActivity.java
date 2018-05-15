@@ -165,7 +165,7 @@ public class ProductListActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private List<ProductWithKey> getFilteredListFromFirebase(final filterResult filterResult) {
+    private Map<String,ProductWithKey> getFilteredListFromFirebase(final filterResult filterResult) {
         DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference("products");
         productsReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -202,7 +202,7 @@ public class ProductListActivity extends AppCompatActivity {
         dialogBuilder.create().show();
     }
 
-    private List<ProductWithKey> getSortedListFromFirebase(final eSort orderBy) {
+    private Map<String ,ProductWithKey> getSortedListFromFirebase(final eSort orderBy) {
         DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference("products");
         productsReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -299,7 +299,7 @@ public class ProductListActivity extends AppCompatActivity {
         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
             Product product = dataSnapshot.getValue(Product.class);
             String key = dataSnapshot.getKey();
-            mProductList.put(key, product);
+            mProductList.put(key, new ProductWithKey(product, key));
         }
         updateListView(mProductList);
     }
