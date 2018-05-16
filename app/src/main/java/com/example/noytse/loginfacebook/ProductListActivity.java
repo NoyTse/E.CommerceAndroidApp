@@ -63,7 +63,7 @@ public class ProductListActivity extends AppCompatActivity {
                     myUser = snapshot.getValue(User.class);
                     if (mProductList != null) {
                         //TODO update in mProductList for each product if purchased (from myUser keys)
-                        for (String id : myUser.getMyBags()){
+                        for (String id : myUser.getMyBags().keySet()){
                             mProductList.get(id).setPurchased(true);
                         }
                     }

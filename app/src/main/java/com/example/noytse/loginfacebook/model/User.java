@@ -6,15 +6,16 @@ import android.os.Parcelable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class User implements Serializable {
+public class User implements Serializable, Parcelable {
     private String email;
     private float totalPurchase;
-    private List<String> myBags = new ArrayList<>();
+    private Map<String,String> myBags;
 
     public User(){}
 
-    public User(String email, int totalPurchase, List<String> myBags) {
+    public User(String email, int totalPurchase, Map<String,String> myBags) {
         this.email = email;
         this.totalPurchase = totalPurchase;
         this.myBags = myBags;
@@ -22,7 +23,7 @@ public class User implements Serializable {
 
     public User(Parcel in) {
         this.email = in.readString();
-        in.readList(myBags,String.class.getClassLoader());
+        in.readMap(myBags,String.class.getClassLoader());
     }
 
     public String getEmail() {
@@ -34,11 +35,12 @@ public class User implements Serializable {
         this.totalPurchase += newPurcahsePrice;
     }
 
-    public List<String> getMyBags() {
+    public Map<String,String> getMyBags() {
         return myBags;
     }
 
-    /*public static final Creator<User> CREATOR = new Creator<User>() {
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
         @Override
         public User createFromParcel(Parcel in) {
             return new User(in);
@@ -59,6 +61,6 @@ public class User implements Serializable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(email);
         parcel.writeFloat(totalPurchase);
-        parcel.writeStringList(myBags);
-    }*/
+        parcel.writeMap(myBags);
+    }
 }
