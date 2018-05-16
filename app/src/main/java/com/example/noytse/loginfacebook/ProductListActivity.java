@@ -79,9 +79,6 @@ public class ProductListActivity extends AppCompatActivity {
             });
         }
 
-
-
-
         mProductList = getProductList();
         mListView = findViewById(R.id.listView_Products);
         mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),this, myUser));
@@ -130,6 +127,9 @@ public class ProductListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 getCurrentUserParchesedProductsList();
+                for (Integer id : myUser.getMyBags()){
+                    mProductList.get(id.toString()).setPurchased(true);
+                }
                 mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),getApplicationContext(), myUser));
             }
         });
@@ -299,11 +299,20 @@ public class ProductListActivity extends AppCompatActivity {
     }
 
     public void updateListViewWithSortedProductList(List<ProductWithKey> sortedList) {
+        for (Integer id : myUser.getMyBags()){
+            mProductList.get(id.toString()).setPurchased(true);
+        }
         mListView.setAdapter(new ProductsAdapter(sortedList,this,myUser));
     }
 
     public void updateListView(Map<String,ProductWithKey> prodList) {
         mProductList = prodList;
+        if(myUser != null){
+            for (Integer id : myUser.getMyBags()){
+                if(mProductList.get(id.toString()) != null)
+                    mProductList.get(id.toString()).setPurchased(true);
+            }
+        }
         mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),this,myUser));
     }
 
