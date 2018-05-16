@@ -16,7 +16,8 @@
     <string name="filter_category">Category</string>
     <string name="filter_color">Color</string>
     <string name="myItems">My Items</string>
-    <string name="addReview_send">Send</string>
+    <string name="addReview_send">Add</string>
     <string name="addReview_title">type your review here</string>
     <string name="add_review">Add Review</string>
+    <string name="purchase_now">purchase now!</string>
 </resources>

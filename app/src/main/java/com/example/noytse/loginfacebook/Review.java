@@ -1,10 +1,12 @@
 package com.example.noytse.loginfacebook;
 
+import java.io.Serializable;
+
 /**
  * Created by NoyTse on 15/05/2018.
  */
 
-public class Review {
+public class Review implements Serializable {
     private String userName;
     private String reviewTxt;
 
