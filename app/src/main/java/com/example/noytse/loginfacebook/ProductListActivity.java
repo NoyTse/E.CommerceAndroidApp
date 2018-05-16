@@ -66,7 +66,8 @@ public class ProductListActivity extends AppCompatActivity {
 
                     if (mProductList != null && myUser.getMyBags() != null) {
                         for (Integer id : myUser.getMyBags()){
-                            mProductList.get(id.toString()).setPurchased(true);
+                            if(mProductList.get(id.toString()) != null)
+                                mProductList.get(id.toString()).setPurchased(true);
                         }
                     }
                     List<Product> prodListForShowing = new ArrayList<>();
@@ -128,7 +129,8 @@ public class ProductListActivity extends AppCompatActivity {
             public void onClick(View view) {
                 getCurrentUserParchesedProductsList();
                 for (Integer id : myUser.getMyBags()){
-                    mProductList.get(id.toString()).setPurchased(true);
+                    if(mProductList.get(id.toString()) != null)
+                        mProductList.get(id.toString()).setPurchased(true);
                 }
                 mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),getApplicationContext(), myUser));
             }
@@ -300,7 +302,8 @@ public class ProductListActivity extends AppCompatActivity {
 
     public void updateListViewWithSortedProductList(List<ProductWithKey> sortedList) {
         for (Integer id : myUser.getMyBags()){
-            mProductList.get(id.toString()).setPurchased(true);
+            if(mProductList.get(id.toString()) != null)
+                mProductList.get(id.toString()).setPurchased(true);
         }
         mListView.setAdapter(new ProductsAdapter(sortedList,this,myUser));
     }
