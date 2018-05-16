@@ -129,15 +129,18 @@ public class ProductListActivity extends AppCompatActivity {
         findViewById(R.id.productList_btnMyItems).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mProductList = getCurrentUserParchesedProductsList();
+                getCurrentUserParchesedProductsList();
                 mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),getApplicationContext(), myUser));
             }
         });
     }
 
-    private Map<String,ProductWithKey> getCurrentUserParchesedProductsList() {
-        Map<String, ProductWithKey> map = new HashMap<>();
+    private void getCurrentUserParchesedProductsList() {
         getFilteredListFromFirebase(new filterResult(),false);
+    }
+
+    private void updateListViewWithUserProducts(){
+        Map<String, ProductWithKey> map = new HashMap<>();
         if(myUser.getMyBags() != null) {
             for (Integer key : myUser.getMyBags()) {
                 map.put(key.toString(), mProductList.get(key.toString()));
@@ -147,7 +150,6 @@ public class ProductListActivity extends AppCompatActivity {
         mProductList.clear();
         mProductList.putAll(map);
         updateListView(mProductList);
-        return mProductList;
     }
 
     private void showFilterDialog() {
@@ -257,7 +259,7 @@ public class ProductListActivity extends AppCompatActivity {
         filteredList.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                updateProductList(snapshot, true);
+                updateSortedProductList(snapshot);
             }
 
             @Override
@@ -281,6 +283,23 @@ public class ProductListActivity extends AppCompatActivity {
     private Map<String,ProductWithKey> getProductList() {
         return new HashMap<>();
         //TODO here should be the code that fetch the data from the firebase storeage
+    }
+
+    private void updateSortedProductList(DataSnapshot snapshot){
+        List<ProductWithKey> sortedList = new ArrayList<>();
+        mProductList.clear();
+        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+            Product product = dataSnapshot.getValue(Product.class);
+            String key = dataSnapshot.getKey();
+            ProductWithKey newProduct = new ProductWithKey(product, key);
+            mProductList.put(key, newProduct);
+            sortedList.add(newProduct);
+        }
+        updateListViewWithSortedProductList(sortedList);
+    }
+
+    public void updateListViewWithSortedProductList(List<ProductWithKey> sortedList) {
+        mListView.setAdapter(new ProductsAdapter(sortedList,this,myUser));
     }
 
     public void updateListView(Map<String,ProductWithKey> prodList) {
@@ -334,6 +353,9 @@ public class ProductListActivity extends AppCompatActivity {
         }
         if (updateUiWhenFinish)
             updateListView(mProductList);
+        else {
+            updateListViewWithUserProducts();
+        }
     }
 
     @Override
