@@ -143,20 +143,4 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
     }
-    private void createNewUser() {
-
-        Log.e(TAG, "createNewUser() >>");
-
-        FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
-
-        if (fbUser == null) {
-            Log.e(TAG, "createNewUser() << Error user is null");
-            return;
-        }
-
-        userRef.child(fbUser.getUid()).push().setValue(new User(fbUser.getEmail(),0,null));
-
-        Log.e(TAG, "createNewUser() <<");
-    }
 }

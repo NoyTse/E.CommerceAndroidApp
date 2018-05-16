@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -60,8 +61,10 @@ public class ProductListActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot snapshot) {
 
                     myUser = snapshot.getValue(User.class);
-                    if (mProductList != null) {
-                        //TODO update in mProductList for each product if purchased (from myUser keys)
+                    if (myUser == null)
+                        createNewUser();
+
+                    if (mProductList != null && myUser.getMyBags() != null) {
                         for (Integer id : myUser.getMyBags()){
                             mProductList.get(id.toString()).setPurchased(true);
                         }
@@ -341,5 +344,14 @@ public class ProductListActivity extends AppCompatActivity {
         }
 
 
+    }
+    private void createNewUser() {
+        FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
+
+        if (fbUser == null)
+            throw  new RuntimeException("Create new user failed: got null as user");
+        myUser = new User(fbUser.getEmail(),0, new ArrayList<Integer>());
+        userRef.child(fbUser.getUid()).setValue(myUser);
     }
 }

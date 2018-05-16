@@ -98,7 +98,6 @@ public class ProductDetails extends AppCompatActivity {
                         Map<String,Object> updateUser = new HashMap<>();
                         updateUser.put(mAuth.getUid(),user);
                         userRef.updateChildren(updateUser);
-
                         btnPurchase.setEnabled(false);
                     }
                 }
