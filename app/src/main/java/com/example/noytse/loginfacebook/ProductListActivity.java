@@ -127,7 +127,7 @@ public class ProductListActivity extends AppCompatActivity {
         findViewById(R.id.productList_btnMyItems).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mProductList = getCurrentUserParchesedProductsList(mFirebaseUser);
+                mProductList = getCurrentUserParchesedProductsList();
                 mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),getApplicationContext(), myUser));
             }
         });

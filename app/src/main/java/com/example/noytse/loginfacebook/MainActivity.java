@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        userRef.child(fbUser.getUid()).setValue(new User(fbUser.getEmail(),0,null));
+        userRef.child(fbUser.getUid()).push().setValue(new User(fbUser.getEmail(),0,null));
 
         Log.e(TAG, "createNewUser() <<");
     }

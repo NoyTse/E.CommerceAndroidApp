@@ -19,7 +19,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class ProductDetails extends AppCompatActivity {
     User user;
@@ -88,7 +90,10 @@ public class ProductDetails extends AppCompatActivity {
                         user.upgdateTotalPurchase(Float.parseFloat(mProduct.getproduct().getPrice().replace("$","")));
                         //Save in db
                         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
-                        userRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user);
+                        Map<String, Object> updates = new HashMap<String,Object>();
+                        updates.put(mAuth.getUid(), user);
+                        userRef.updateChildren(updates);
+                        //userRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user);
 
                         btnPurchase.setEnabled(false);
                     }
