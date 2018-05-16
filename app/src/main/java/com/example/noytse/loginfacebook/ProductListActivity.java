@@ -136,7 +136,7 @@ public class ProductListActivity extends AppCompatActivity {
     private Map<String,ProductWithKey> getCurrentUserParchesedProductsList() {
         Map<String, ProductWithKey> map = new HashMap<>();
         getFilteredListFromFirebase(new filterResult());
-        for(String key: myUser.getMyBags()){
+        for(String key: myUser.getMyBags().keySet()){
             map.put(key, mProductList.get(key));
         }
         mProductList.clear();
