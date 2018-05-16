@@ -138,8 +138,10 @@ public class ProductListActivity extends AppCompatActivity {
     private Map<String,ProductWithKey> getCurrentUserParchesedProductsList() {
         Map<String, ProductWithKey> map = new HashMap<>();
         getFilteredListFromFirebase(new filterResult(),false);
-        for(Integer key: myUser.getMyBags()){
-            map.put(key.toString(), mProductList.get(key.toString()));
+        if(myUser.getMyBags() != null) {
+            for (Integer key : myUser.getMyBags()) {
+                map.put(key.toString(), mProductList.get(key.toString()));
+            }
         }
         myItemsShow = true;
         mProductList.clear();
@@ -351,7 +353,7 @@ public class ProductListActivity extends AppCompatActivity {
 
         if (fbUser == null)
             throw  new RuntimeException("Create new user failed: got null as user");
-        myUser = new User(fbUser.getEmail(),0, new ArrayList<Integer>());
+        myUser = new User(fbUser.getEmail(),0, null);
         userRef.child(fbUser.getUid()).setValue(myUser);
     }
 }
