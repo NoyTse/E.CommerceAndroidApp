@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -60,7 +61,10 @@ public class ProductListActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot snapshot) {
 
                     myUser = snapshot.getValue(User.class);
-                    if (mProductList != null) {
+                    if (myUser == null)
+                        createNewUser();
+
+                    if (mProductList != null && myUser.getMyBags() != null) {
                         for (Integer id : myUser.getMyBags()){
                             mProductList.get(id.toString()).setPurchased(true);
                         }
@@ -285,26 +289,25 @@ public class ProductListActivity extends AppCompatActivity {
     private void filterProductList(DataSnapshot snapshot, final filterResult filterResult, final boolean updateUiWhenFinish) {
         Query filteredList;
         DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference("products");
-        filteredList = productsReference.getRoot();
 
-        if (filterResult.White || filterResult.Red || filterResult.Blue) {
+        if (filterResult.White || filterResult.Red || filterResult.Blue)
             filteredList = productsReference.orderByChild("color");
-            if (filterResult.White)
-                filteredList = filteredList.equalTo("white");
-            else if (filterResult.Red)
-                filteredList = filteredList.equalTo("red");
-            else if (filterResult.Blue)
-                filteredList = filteredList.equalTo("blue");
-        }
-        else if (filterResult.Towels || filterResult.Shoes || filterResult.Bags) {
+        else
             filteredList = productsReference.orderByChild("category");
-            if(filterResult.Bags)
-                filteredList = filteredList.equalTo("bags");
-            else if(filterResult.Shoes)
-                filteredList = filteredList.equalTo("shoes");
-            else if(filterResult.Towels)
-                filteredList = filteredList.equalTo("towels");
-        }
+
+        if(filterResult.White)
+            filteredList = filteredList.equalTo("white");
+        else if(filterResult.Red)
+            filteredList = filteredList.equalTo("red");
+        else if(filterResult.Blue)
+            filteredList = filteredList.equalTo("blue");
+
+        else if(filterResult.Bags)
+            filteredList = filteredList.equalTo("bags");
+        else if(filterResult.Shoes)
+            filteredList = filteredList.equalTo("shoes");
+        else if(filterResult.Towels)
+            filteredList = filteredList.equalTo("towels");
 
         filteredList.addValueEventListener(new ValueEventListener() {
             @Override
@@ -341,5 +344,14 @@ public class ProductListActivity extends AppCompatActivity {
         }
 
 
+    }
+    private void createNewUser() {
+        FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
+
+        if (fbUser == null)
+            throw  new RuntimeException("Create new user failed: got null as user");
+        myUser = new User(fbUser.getEmail(),0, new ArrayList<Integer>());
+        userRef.child(fbUser.getUid()).setValue(myUser);
     }
 }
