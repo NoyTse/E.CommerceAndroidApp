@@ -1,11 +1,13 @@
 package com.example.noytse.loginfacebook;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -22,6 +24,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class ProductDetails extends AppCompatActivity {
@@ -49,7 +52,7 @@ public class ProductDetails extends AppCompatActivity {
         TextView lblMaterial = findViewById(R.id.prodDetail_material);
         TextView lblPrice = findViewById(R.id.prodDetail_price);
         final Button btnPurchase = findViewById(R.id.prodDetail_btnPurchase);
-        Button btnAddReview = findViewById(R.id.prodDetail_btnAddReview);
+        final Button btnAddReview = findViewById(R.id.prodDetail_btnAddReview);
         ListView reviewListView = findViewById(R.id.prodDetail_reviewList);
 
         Product prodDetails = mProduct.getproduct();
@@ -63,20 +66,14 @@ public class ProductDetails extends AppCompatActivity {
         lblMaterial.setText(prodDetails.getMaterial());
         lblPrice.setText(prodDetails.getPrice());
 
-        btnPurchase.setEnabled(!mProduct.isPurchased());
-        //TODO set adapter to reviewListView
+        btnAddReview.setVisibility(mProduct.isPurchased()? View.VISIBLE : View.INVISIBLE);
+        btnPurchase.setVisibility(mProduct.isPurchased()? View.INVISIBLE : View.VISIBLE);
 
-        /*if(user != null) {
-            Iterator i = user.getMyBags().iterator();
-            while (i.hasNext()) {
-                if (i.next().equals(key)) {
-                    mProduct.setPurchased(true);
-                    btnPurchase.setEnabled(false);
-                    Toast.makeText(this,"On The Way To You",Toast.LENGTH_SHORT).show();
-                    break;
-                }
-            }
-        }*/
+        //set adapter to reviewListView
+        List<Review> reviewsForCurrProduct =  mProduct.getproduct().getReviewList();
+        if (reviewsForCurrProduct != null)
+            reviewListView.setAdapter(new ReviewAdapter(reviewsForCurrProduct,this));
+
 
         btnPurchase.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,9 +98,44 @@ public class ProductDetails extends AppCompatActivity {
                         updateUser.put(mAuth.getUid(),user);
                         userRef.updateChildren(updateUser);
                         btnPurchase.setEnabled(false);
+                        btnPurchase.setText("Purchased! :)");
+                        btnAddReview.setVisibility(View.VISIBLE);
                     }
                 }
             }
         });
+
+        btnAddReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAddReviewDialog();
+            }
+        });
+    }
+
+    private void showAddReviewDialog() {
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.review_add_form);
+        dialog.setTitle("Add Review");
+        final EditText txtReviewContent = dialog.findViewById(R.id.addReview_txtContent);
+        Button btnAdd = dialog.findViewById(R.id.addReview_btnSend);
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String reviewContent = txtReviewContent.getText().toString().trim();
+                if (reviewContent.length() > 0) {
+                    mProduct.getproduct().getReviewList().add(new Review(user.getEmail(), txtReviewContent.getText().toString().trim()));
+                    DatabaseReference productListDB = FirebaseDatabase.getInstance().getReference("products");
+                    Map<String,Object> updatedProductForSavingInDB = new HashMap<String, Object>();
+                    updatedProductForSavingInDB.put(mProduct.getKey(),mProduct.getproduct());
+                    productListDB.updateChildren(updatedProductForSavingInDB);
+                }
+
+                dialog.dismiss();
+            }
+        });
+
+
+        dialog.show();
     }
 }

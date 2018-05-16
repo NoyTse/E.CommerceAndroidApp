@@ -105,7 +105,7 @@
         android:id="@+id/prodDetail_btnPurchase"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="purche now!"
+        android:text="@string/purchase_now"
         android:layout_gravity="center"/>
     <LinearLayout
         android:layout_width="match_parent"
