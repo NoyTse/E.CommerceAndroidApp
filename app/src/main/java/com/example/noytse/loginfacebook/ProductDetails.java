@@ -19,7 +19,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class ProductDetails extends AppCompatActivity {
     User user;
@@ -32,7 +35,10 @@ public class ProductDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
         mProduct = (ProductWithKey) this.getIntent().getSerializableExtra("Product");
-        user = (User)this.getIntent().getSerializableExtra("user");
+        String userMail = this.getIntent().getStringExtra("user_email");
+        float total = this.getIntent().getFloatExtra("user_total",0);
+        ArrayList<Integer> purchased = (ArrayList<Integer>)this.getIntent().getSerializableExtra("user_ParchesedList");
+        user = new User(userMail,total,purchased);
 
         ImageView imgProdPhoto = findViewById(R.id.prodDetail_prodPhoto);
         TextView lblProdName = findViewById(R.id.prodDetail_prodName);
@@ -86,9 +92,12 @@ public class ProductDetails extends AppCompatActivity {
                     if (!mProduct.isPurchased()) {
                         mProduct.setPurchased(true);
                         user.upgdateTotalPurchase(Float.parseFloat(mProduct.getproduct().getPrice().replace("$","")));
+                        user.getMyBags().add(Integer.parseInt(mProduct.getKey()));
                         //Save in db
                         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
-                        userRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user);
+                        Map<String,Object> updateUser = new HashMap<>();
+                        updateUser.put(mAuth.getUid(),user);
+                        userRef.updateChildren(updateUser);
 
                         btnPurchase.setEnabled(false);
                     }

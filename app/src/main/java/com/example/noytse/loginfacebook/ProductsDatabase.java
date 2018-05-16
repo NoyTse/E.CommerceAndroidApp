@@ -52,7 +52,7 @@ public class ProductsDatabase{
             ProductWithKey currentProduct = new ProductWithKey(product, key);
 
             if (myUser != null) {
-                for (String id : myUser.getMyBags().keySet()) {
+                for (Integer id : myUser.getMyBags()) {
                     currentProduct.setPurchased(true);
                 }
             }

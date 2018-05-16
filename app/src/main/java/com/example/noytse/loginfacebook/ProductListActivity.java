@@ -3,12 +3,10 @@ package com.example.noytse.loginfacebook;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.support.constraint.solver.widgets.Snapshot;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -29,13 +27,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 public class ProductListActivity extends AppCompatActivity {
     private FirebaseUser mFirebaseUser;
     private User myUser;
+    private boolean myItemsShow = false;
 
     private enum eSort {
         NAME,
@@ -63,8 +61,8 @@ public class ProductListActivity extends AppCompatActivity {
                     myUser = snapshot.getValue(User.class);
                     if (mProductList != null) {
                         //TODO update in mProductList for each product if purchased (from myUser keys)
-                        for (String id : myUser.getMyBags().keySet()){
-                            mProductList.get(id).setPurchased(true);
+                        for (Integer id : myUser.getMyBags()){
+                            mProductList.get(id.toString()).setPurchased(true);
                         }
                     }
                     List<Product> prodListForShowing = new ArrayList<>();
@@ -127,7 +125,7 @@ public class ProductListActivity extends AppCompatActivity {
         findViewById(R.id.productList_btnMyItems).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mProductList = getCurrentUserParchesedProductsList(mFirebaseUser);
+                mProductList = getCurrentUserParchesedProductsList();
                 mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),getApplicationContext(), myUser));
             }
         });
@@ -135,10 +133,11 @@ public class ProductListActivity extends AppCompatActivity {
 
     private Map<String,ProductWithKey> getCurrentUserParchesedProductsList() {
         Map<String, ProductWithKey> map = new HashMap<>();
-        getFilteredListFromFirebase(new filterResult());
-        for(String key: myUser.getMyBags()){
-            map.put(key, mProductList.get(key));
+        getFilteredListFromFirebase(new filterResult(),false);
+        for(Integer key: myUser.getMyBags()){
+            map.put(key.toString(), mProductList.get(key.toString()));
         }
+        myItemsShow = true;
         mProductList.clear();
         mProductList.putAll(map);
         updateListView(mProductList);
@@ -185,19 +184,19 @@ public class ProductListActivity extends AppCompatActivity {
                 filterResult.Towels= ((CheckBox)dialog.findViewById(R.id.checkbox_towels)).isChecked();
                 filterResult.White= ((CheckBox)dialog.findViewById(R.id.checkbox_white)).isChecked();
 
-                getFilteredListFromFirebase(filterResult);
+                getFilteredListFromFirebase(filterResult,true);
                 dialog.dismiss();
             }
         });
         dialog.show();
     }
 
-    private void getFilteredListFromFirebase(final filterResult filterResult) {
+    private void getFilteredListFromFirebase(final filterResult filterResult, final boolean updateUiWhenFinish) {
         DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference("products");
         productsReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                filterProductList(snapshot, filterResult);
+                filterProductList(snapshot, filterResult,updateUiWhenFinish);
             }
 
             @Override
@@ -252,7 +251,7 @@ public class ProductListActivity extends AppCompatActivity {
         filteredList.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                updateProductList(snapshot);
+                updateProductList(snapshot, true);
             }
 
             @Override
@@ -283,7 +282,7 @@ public class ProductListActivity extends AppCompatActivity {
         mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),this,myUser));
     }
 
-    private void filterProductList(DataSnapshot snapshot, final filterResult filterResult) {
+    private void filterProductList(DataSnapshot snapshot, final filterResult filterResult, final boolean updateUiWhenFinish) {
         Query filteredList;
         DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference("products");
 
@@ -309,7 +308,7 @@ public class ProductListActivity extends AppCompatActivity {
         filteredList.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                updateProductList(snapshot);
+                updateProductList(snapshot,updateUiWhenFinish);
             }
 
             @Override
@@ -319,7 +318,7 @@ public class ProductListActivity extends AppCompatActivity {
         });
     }
 
-    private void updateProductList(DataSnapshot snapshot) {
+    private void updateProductList(DataSnapshot snapshot, boolean updateUiWhenFinish) {
 
         mProductList.clear();
         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
@@ -327,6 +326,19 @@ public class ProductListActivity extends AppCompatActivity {
             String key = dataSnapshot.getKey();
             mProductList.put(key, new ProductWithKey(product, key));
         }
-        updateListView(mProductList);
+        if (updateUiWhenFinish)
+            updateListView(mProductList);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (myItemsShow) {
+            myItemsShow = false;
+            getFilteredListFromFirebase(new filterResult(),true);
+        } else {
+            super.onBackPressed();
+        }
+
+
     }
 }

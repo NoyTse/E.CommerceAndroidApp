@@ -9,13 +9,29 @@ import java.util.List;
 import java.util.Map;
 
 public class User implements Serializable, Parcelable {
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public float getTotalPurchase() {
+        return totalPurchase;
+    }
+
+    public void setTotalPurchase(float totalPurchase) {
+        this.totalPurchase = totalPurchase;
+    }
+
+    public void setMyBags(ArrayList<Integer> myBags) {
+        this.myBags = myBags;
+    }
+
     private String email;
     private float totalPurchase;
-    private Map<String,String> myBags;
+    private ArrayList<Integer> myBags;
 
     public User(){}
 
-    public User(String email, int totalPurchase, Map<String,String> myBags) {
+    public User(String email, float totalPurchase, ArrayList<Integer> myBags) {
         this.email = email;
         this.totalPurchase = totalPurchase;
         this.myBags = myBags;
@@ -23,7 +39,7 @@ public class User implements Serializable, Parcelable {
 
     public User(Parcel in) {
         this.email = in.readString();
-        in.readMap(myBags,String.class.getClassLoader());
+        in.readList(myBags,String.class.getClassLoader());
     }
 
     public String getEmail() {
@@ -35,7 +51,7 @@ public class User implements Serializable, Parcelable {
         this.totalPurchase += newPurcahsePrice;
     }
 
-    public Map<String,String> getMyBags() {
+    public ArrayList<Integer> getMyBags() {
         return myBags;
     }
 
@@ -61,6 +77,6 @@ public class User implements Serializable, Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(email);
         parcel.writeFloat(totalPurchase);
-        parcel.writeMap(myBags);
+        parcel.writeList(myBags);
     }
 }

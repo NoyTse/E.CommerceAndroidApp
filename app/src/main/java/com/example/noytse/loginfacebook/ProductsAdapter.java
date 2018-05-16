@@ -74,7 +74,9 @@ public class ProductsAdapter extends BaseAdapter {
             public void onClick(View view) {
                 Intent prodDetailIntent = new Intent(mContext,ProductDetails.class);
                 prodDetailIntent.putExtra("Product",mProductList.get(N));
-                prodDetailIntent.putExtra("user",(Serializable)user);
+                prodDetailIntent.putExtra("user_email",user.getEmail());
+                prodDetailIntent.putExtra("user_ParchesedList",user.getMyBags());
+                prodDetailIntent.putExtra("user_total",user.getTotalPurchase());
                 view.getContext().startActivity(prodDetailIntent);
             }
         });
