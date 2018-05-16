@@ -92,6 +92,8 @@ public class ProductDetails extends AppCompatActivity {
                     if (!mProduct.isPurchased()) {
                         mProduct.setPurchased(true);
                         user.upgdateTotalPurchase(Float.parseFloat(mProduct.getproduct().getPrice().replace("$","")));
+                        if (user.getMyBags() == null)
+                            user.setMyBags(new ArrayList<Integer>());
                         user.getMyBags().add(Integer.parseInt(mProduct.getKey()));
                         //Save in db
                         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");

@@ -8,6 +8,9 @@ public class Review {
     private String userName;
     private String reviewTxt;
 
+    public Review() {
+    }
+
     public Review(String userName, String reviewTxt) {
         this.userName = userName;
         this.reviewTxt = reviewTxt;

@@ -19,7 +19,7 @@ public class Product implements Serializable {
     private String material;
     private String photoURL;
     private String price;
-    //private ArrayList<Review> reviewList = new ArrayList<>();
+    private ArrayList<Review> reviewList = new ArrayList<>();
 
     public Product(){}
     public Product(String name, String category, String color, String availableInStock, String size, String material, String photoURL, String price, ArrayList<Review> reviewList) {
@@ -31,7 +31,7 @@ public class Product implements Serializable {
         this.material = material;
         this.photoURL = photoURL;
         this.price = price;
-      //  this.reviewList = reviewList;
+        this.reviewList = reviewList;
     }
 
     public String getCategory() {
@@ -98,11 +98,11 @@ public class Product implements Serializable {
         this.price = price;
     }
 
-    /*public ArrayList<Review> getReviewList() {
+    public ArrayList<Review> getReviewList() {
         return reviewList;
     }
 
     public void setReviewList(ArrayList<Review> reviewList) {
         this.reviewList = reviewList;
-    }*/
+    }
 }
