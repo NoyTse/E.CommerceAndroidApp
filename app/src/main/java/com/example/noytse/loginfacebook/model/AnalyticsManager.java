@@ -16,6 +16,8 @@ package com.example.noytse.loginfacebook.model;
         import org.json.JSONException;
         import org.json.JSONObject;
 
+        import java.sql.Time;
+        import java.util.Date;
         import java.util.HashMap;
         import java.util.Map;
 
@@ -47,9 +49,12 @@ public class AnalyticsManager {
                 .withLogEnabled(true)
                 .build(context, "DXGZNHVWWW7FQNV9244V");
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
+
     }
 
-    public void EnterApp
+
+
+
     public void trackSearchEvent(String searchString) {
 
         String eventName = "search";
