@@ -1,10 +1,12 @@
 package com.example.noytse.loginfacebook;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -267,12 +269,17 @@ public class user_details_form extends AppCompatActivity {
         setContentView(R.layout.activity_user_details_form);
 
         final Spinner spinner = findViewById(R.id.spinnerCountry);
-        spinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (i > 0){
                     Toast.makeText(getApplicationContext(), countryList[i],Toast.LENGTH_SHORT).show();
                 }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
 
@@ -280,5 +287,13 @@ public class user_details_form extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinner.setAdapter(adapter);
+
+        findViewById(R.id.btnUserDetailContinue).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent productListIntent = new Intent(user_details_form.this,ProductListActivity.class);
+                startActivity(productListIntent);
+            }
+        });
     }
 }

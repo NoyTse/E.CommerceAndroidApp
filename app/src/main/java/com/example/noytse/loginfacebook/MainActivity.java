@@ -129,15 +129,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void onLoggedInUser(FirebaseUser loggedInUser){
         if (loggedInUser != null) {
-        /*    Intent userProfileIntent = new Intent(this,UserProfileActivity.class);
-            userProfileIntent.putExtra(UserProfileActivity.k_UserName, loggedInUser.getDisplayName());
-            userProfileIntent.putExtra(UserProfileActivity.k_UserEmail, loggedInUser.getEmail());
-            if (loggedInUser.getPhotoUrl() != null)
-                userProfileIntent.putExtra(UserProfileActivity.k_UserPhotoURL,loggedInUser.getPhotoUrl().toString());*/
-            Intent productListIntent = new Intent(this,ProductListActivity.class);
-            //TODO try get user from db. on failed, create in the db new user
 
-            startActivity(productListIntent);
+
+            Intent userMoreDetailsIntent = new Intent(this,user_details_form.class);
+            startActivity(userMoreDetailsIntent);
             finish();
         }
     }

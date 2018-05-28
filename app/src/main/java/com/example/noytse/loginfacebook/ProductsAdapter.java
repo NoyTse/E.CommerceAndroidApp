@@ -28,11 +28,13 @@ public class ProductsAdapter extends BaseAdapter {
     private List<ProductWithKey> mProductList;
     private Context mContext;
     private User user;
+    private boolean searchMode ;
 
     public ProductsAdapter(List<ProductWithKey> mProductList, Context mContext, User user) {
         this.mProductList = mProductList;
         this.mContext = mContext;
         this.user = user;
+        this.searchMode = false;
     }
 
     @Override
@@ -82,6 +84,14 @@ public class ProductsAdapter extends BaseAdapter {
             }
         });
 
+        if (searchMode){
+            //TODO (currentProduct = mProductList.get(i)
+        }
+
         return view;
+    }
+
+    public void setSearchMode(boolean searchMode) {
+        this.searchMode = searchMode;
     }
 }
