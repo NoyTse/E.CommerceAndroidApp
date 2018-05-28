@@ -17,6 +17,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Date;
+
 public class SignUpActivity extends AppCompatActivity {
     private static final String TAG  = "SignUp";
     private TextView email;
@@ -37,6 +39,15 @@ public class SignUpActivity extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        MainActivity.enterAppTime=new Date();
+        // TODO event- enter app
+    }
+
     public void onSignUpClick(View view) {
 
         boolean valid = true;

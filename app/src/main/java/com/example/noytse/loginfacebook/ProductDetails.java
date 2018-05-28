@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -111,6 +112,7 @@ public class ProductDetails extends AppCompatActivity {
                 showAddReviewDialog();
             }
         });
+
     }
 
     private void showAddReviewDialog() {
@@ -137,5 +139,15 @@ public class ProductDetails extends AppCompatActivity {
 
 
         dialog.show();
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        if (!MainActivity.isInTheApp) {
+            MainActivity.enterAppTime = new Date();
+            // TODO event- enter app
+        }
     }
 }

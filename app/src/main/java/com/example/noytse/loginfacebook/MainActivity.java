@@ -25,7 +25,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.provider.FirebaseInitProvider;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,11 +43,14 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private ProductsDatabase mDataBase;
     private boolean mAnonymouseEnable = true;
+    public static Date enterAppTime;
+    public static boolean isInTheApp = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
 
         boolean isFromProductDetails = getIntent().getBooleanExtra("isFromProductDetails", false);
@@ -120,13 +125,6 @@ public class MainActivity extends AppCompatActivity {
         mFacebookLogin.onActivityResult(requestCode,resultCode,data);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        onLoggedInUser(currentUser);
-
-    }
 
 
     public void onLoggedInUser(FirebaseUser loggedInUser){
