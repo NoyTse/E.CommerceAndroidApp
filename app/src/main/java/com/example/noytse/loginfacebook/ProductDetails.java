@@ -38,7 +38,15 @@ public class ProductDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
+
+
         mProduct = (ProductWithKey) this.getIntent().getSerializableExtra("Product");
+        if(this.getIntent().hasExtra("FromService")){
+//            Product productFromService = (Product) this.getIntent().getSerializableExtra("FromService");
+//            if(productFromService != null){
+//                mProduct.setProduct(productFromService);
+//            }
+        }
         String userMail = this.getIntent().getStringExtra("user_email");
         float total = this.getIntent().getFloatExtra("user_total",0);
         ArrayList<Integer> purchased = (ArrayList<Integer>)this.getIntent().getSerializableExtra("user_ParchesedList");
