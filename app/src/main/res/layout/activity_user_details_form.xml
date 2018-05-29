@@ -64,11 +64,13 @@
             android:layout_height="wrap_content"
             android:text="@string/birthday"/>
         <TextView
+            android:id="@+id/lblSelectedBirthday"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/default_birthday"
             android:layout_marginHorizontal="10dp"/>
         <Button
+            android:id="@+id/btnSetBirthday"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/btnSetBirthday"
