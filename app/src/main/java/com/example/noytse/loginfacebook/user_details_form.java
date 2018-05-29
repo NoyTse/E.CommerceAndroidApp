@@ -299,6 +299,7 @@ public class user_details_form extends AppCompatActivity {
                     updateUserProperties();
                     Intent productListIntent = new Intent(user_details_form.this, ProductListActivity.class);
                     startActivity(productListIntent);
+                    user_details_form.this.finish();
                 }
             }
         });
@@ -310,7 +311,7 @@ public class user_details_form extends AppCompatActivity {
     }
 
     private void updateUserProperties() {
-        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(user_details_form.this);
+        AnalyticsManager firebaseAnalytics = AnalyticsManager.getInstance();
         firebaseAnalytics.setUserProperty("Country",txtCountry);
         firebaseAnalytics.setUserProperty("DateOfBirth",txtBirthday);
         firebaseAnalytics.setUserProperty("Gender",txtGender);

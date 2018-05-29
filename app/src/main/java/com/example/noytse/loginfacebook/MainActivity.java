@@ -40,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        enterAppTime=new Date();
         AnalyticsManager.getInstance().init(getApplicationContext());
         AnalyticsManager.getInstance().trackAppEntrance();
-        enterAppTime=new Date();
 
 
         boolean isFromProductDetails = getIntent().getBooleanExtra("isFromProductDetails", false);
