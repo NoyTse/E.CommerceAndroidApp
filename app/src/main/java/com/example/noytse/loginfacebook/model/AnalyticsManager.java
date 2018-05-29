@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.noytse.loginfacebook.MainActivity;
 import com.flurry.android.FlurryAgent;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -13,8 +14,11 @@ import org.json.JSONObject;
 
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class AnalyticsManager {
     private static String TAG = "AnalyticsManager";
@@ -91,15 +95,37 @@ public class AnalyticsManager {
     }
 
     public void trackSortParameters(String sortParameter){
+        String eventName = "sort";
+
+        //Firebase
+        Bundle params = new Bundle();
+        params.putString(FirebaseAnalytics.Param.SEARCH_TERM, sortParameter);
+        mFirebaseAnalytics.logEvent(eventName,params);
+
+        //Flurry
+        Map<String, String> eventParams = new HashMap<String, String>();
+        eventParams.put("search term", sortParameter);
+        FlurryAgent.logEvent(eventName, eventParams);
+    }
+
+    public void trackTimeInsideTheApp(Date time/*not sure*/){
+        long diffInMillies = MainActivity.enterAppTime.getTime() - time.getTime();
+         timeUnit timeInside = timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
 
     }
 
-    public void trackTimeInsideTheApp(Time time/*not sure*/){
+    public void trackAppEntrance(Timestamp timestamp){
+        String eventName = "entrance";
 
-    }
+        //Firebase
+        Bundle params = new Bundle();
+        params.putString(eventName, timestamp.toString());
+        mFirebaseAnalytics.logEvent(eventName,params);
 
-    public void trackAppEntrance(){
-
+        //Flurry
+        Map<String, String> eventParams = new HashMap<String, String>();
+        eventParams.put(eventName, timestamp.toString());
+        FlurryAgent.logEvent(eventName, eventParams);
     }
 
     public void init(Context context) {
