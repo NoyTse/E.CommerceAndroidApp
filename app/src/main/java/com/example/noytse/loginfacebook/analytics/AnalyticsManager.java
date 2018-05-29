@@ -1,4 +1,4 @@
-package com.example.noytse.loginfacebook.model;
+package com.example.noytse.loginfacebook.analytics;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -147,6 +147,12 @@ public class AnalyticsManager {
         //mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SEARCH,params);
         //Firebase
         Bundle params = new Bundle();
+        //params.putString("User", "example");
+        //mFirebaseAnalytics.logEvent("App_entrance",params);
+
+        //Map<String, String> eventParams = new HashMap<String, String>();
+        //eventParams.put("User", "example");
+        //FlurryAgent.logEvent("App_entrance", eventParams);
         params.putLong(eventName, timestamp.getTime());
         mFirebaseAnalytics.logEvent(eventName,params);
 
@@ -158,7 +164,7 @@ public class AnalyticsManager {
 
     public void init(Context context) {
 
-        new FlurryAgent.Builder().withLogEnabled(true).build(context, "MR4FKRPWNRZGRG4WNQ87");
+        new FlurryAgent.Builder().withLogEnabled(true).build(context, "DXGZNHVWWW7FQNV9244V");
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
 
