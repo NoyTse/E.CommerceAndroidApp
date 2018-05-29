@@ -22,11 +22,7 @@ public class AnalyticsManager {
     private FirebaseAnalytics mFirebaseAnalytics;
 
 
-    private AnalyticsManager() {
-
-
-
-    }
+    private AnalyticsManager() { }
 
     public static AnalyticsManager getInstance() {
 
@@ -54,9 +50,10 @@ public class AnalyticsManager {
 
         String eventName = "purchase";
         Bundle params = new Bundle();
-        params.putDouble(FirebaseAnalytics.Param.PRICE,Double.parseDouble(prod.getPrice()));
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.ECOMMERCE_PURCHASE,params);
+        params.putString(FirebaseAnalytics.Param.ITEM_NAME,prod.getName());
+        params.putString(FirebaseAnalytics.Param.PRICE,prod.getPrice());
 
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.ECOMMERCE_PURCHASE,params);
 
         //Flurry
         Map<String, String> eventParams = new HashMap<String, String>();
