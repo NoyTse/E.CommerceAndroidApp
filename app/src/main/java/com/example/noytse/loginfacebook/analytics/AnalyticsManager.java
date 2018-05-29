@@ -152,7 +152,14 @@ public class AnalyticsManager {
 
     private String timeToStr(long milli)
     {
-        long timeBetween = TimeUnit.MILLISECONDS.toSeconds(milli);
+        long second = (milli / 1000) % 60;
+        long minute = (milli / (1000 * 60)) % 60;
+        long hour = (milli / (1000 * 60 * 60)) % 24;
+        long days = milli/(1000*60*60*24);
+
+        String time = String.format("%02d:%02d:%02d %d days", hour, minute, second, days);
+
+       /* long timeBetween = TimeUnit.MILLISECONDS.toSeconds(milli);
         int timeBetweenDays,timeBetweenHours,timeBetweenMinutes;
         timeBetweenDays= (int)timeBetween/60/60/24;
         timeBetween = (int)timeBetween - (int)timeBetween*60*60*24;
@@ -160,14 +167,15 @@ public class AnalyticsManager {
         timeBetween = (int)timeBetween - (int)timeBetween*60*60;
         timeBetweenMinutes = (int)timeBetween/60;
         timeBetween = (int)timeBetween - (int)timeBetween*60;
-
-        return String.format("%2d:%2d:%2d-%d-days",timeBetweenHours,timeBetweenMinutes,(int)timeBetween,timeBetweenDays);
+*/
+        //return String.format("%2d:%2d:%2d-%d-days",timeBetweenHours,timeBetweenMinutes,(int)timeBetween,timeBetweenDays);
+        return time;
     }
     public void trackAppEntrance(){
         String eventName = "entrance";
         Bundle params = new Bundle();
         params.putString(eventName, timeToStr(MainActivity.enterAppTime.getTime()));
-        mFirebaseAnalytics.logEvent(eventName,params);
+        mFirebaseAnalytics.logEvent(eventName,params  );
 
         //Flurry
         Map<String, String> eventParams = new HashMap<String, String>();
