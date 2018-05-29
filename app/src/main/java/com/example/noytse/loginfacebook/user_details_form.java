@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -283,6 +285,7 @@ public class user_details_form extends AppCompatActivity {
     private String txtBirthday;
     private String txtCountry;
     private String txtGender;
+    private String txtFavoriteCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -291,6 +294,7 @@ public class user_details_form extends AppCompatActivity {
 
         initializeCountrySpinner();
         initializeBirthdayDatePicker();
+        initializeFavoriteCategory();
 
         findViewById(R.id.btnUserDetailContinue).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -304,6 +308,39 @@ public class user_details_form extends AppCompatActivity {
             }
         });
     }
+
+    private void initializeFavoriteCategory() {
+        final List<CheckBox> checkBoxList = new ArrayList<>();
+        checkBoxList.add((CheckBox)findViewById(R.id.moreDetails_towels));
+        checkBoxList.add((CheckBox)findViewById(R.id.moreDetails_shoes));
+        checkBoxList.add((CheckBox)findViewById(R.id.moreDetails_bags));
+
+        for(final CheckBox checkBox : checkBoxList){
+            final CheckBox currCheckBox = checkBox;
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    StringBuilder stringBuilder = new StringBuilder();
+                    stringBuilder.append(txtFavoriteCategory);
+                    if (b){ //checked
+                        if (!txtFavoriteCategory.contains(checkBox.getText())){
+                            if (txtFavoriteCategory != null){
+                                stringBuilder.append(';');
+                            }
+                            stringBuilder.append(checkBox.getText());
+                            txtFavoriteCategory = stringBuilder.toString();
+                        }
+                    } else {
+                        if (txtFavoriteCategory.contains(checkBox.getText())){
+                            txtFavoriteCategory.replace(checkBox.getText() + ";","");
+                            txtFavoriteCategory.replace(checkBox.getText(),"");
+                        }
+                    }
+                }
+            });
+        }
+    }
+
     @Override
     public void onStop(){
         super.onStop();
