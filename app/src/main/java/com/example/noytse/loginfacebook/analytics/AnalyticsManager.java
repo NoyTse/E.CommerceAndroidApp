@@ -71,17 +71,9 @@ public class AnalyticsManager {
     public void trackTimeBetweenPurchaseAndReview(){
         String eventName = "timeBetweenPurchToRev";
         long diffInMillies = ProductDetails.purchaseTime.getTime() - new Date().getTime();
-        long timeBetween = TimeUnit.MILLISECONDS.toSeconds(diffInMillies);
-        int timeBetweenDays,timeBetweenHours,timeBetweenMinutes;
-        timeBetweenDays= (int)timeBetween/60/60/24;
-        timeBetween = (int)timeBetween - (int)timeBetween*60*60*24;
-        timeBetweenHours = (int)timeBetween/60/60;
-        timeBetween = (int)timeBetween - (int)timeBetween*60*60;
-        timeBetweenMinutes = (int)timeBetween/60;
-        timeBetween = (int)timeBetween - (int)timeBetween*60;
 
         //String duration = String.format("%2d:%2d:%2d-%d-days",timeBetweenHours,timeBetweenMinutes,(int)timeBetween,timeBetweenDays)
-        String duration = "10";
+        String duration = timeToStr(diffInMillies);
 
         //Firebase
         Bundle params = new Bundle();
@@ -158,10 +150,23 @@ public class AnalyticsManager {
         FlurryAgent.logEvent(eventName, eventParams);
     }
 
+    private String timeToStr(long milli)
+    {
+        long timeBetween = TimeUnit.MILLISECONDS.toSeconds(milli);
+        int timeBetweenDays,timeBetweenHours,timeBetweenMinutes;
+        timeBetweenDays= (int)timeBetween/60/60/24;
+        timeBetween = (int)timeBetween - (int)timeBetween*60*60*24;
+        timeBetweenHours = (int)timeBetween/60/60;
+        timeBetween = (int)timeBetween - (int)timeBetween*60*60;
+        timeBetweenMinutes = (int)timeBetween/60;
+        timeBetween = (int)timeBetween - (int)timeBetween*60;
+
+        return String.format("%2d:%2d:%2d-%d-days",timeBetweenHours,timeBetweenMinutes,(int)timeBetween,timeBetweenDays);
+    }
     public void trackAppEntrance(){
         String eventName = "entrance";
         Bundle params = new Bundle();
-        params.putLong(eventName, MainActivity.enterAppTime.getTime());
+        params.putString(eventName, timeToStr(MainActivity.enterAppTime.getTime()));
         mFirebaseAnalytics.logEvent(eventName,params);
 
         //Flurry
