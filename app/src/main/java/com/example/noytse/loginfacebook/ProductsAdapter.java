@@ -84,7 +84,7 @@ public class ProductsAdapter extends BaseAdapter {
 
         if (searchMode){
             //TODO (currentProduct = mProductList.get(i)
-           AnalyticsManager.getInstance().trackSearchEvent(mProductList.get(i).toString());
+           AnalyticsManager.getInstance().trackSearchEvent(mProductList.get(i).getKey());
         }
 
         return view;
