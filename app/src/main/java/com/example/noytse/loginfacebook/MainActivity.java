@@ -5,31 +5,23 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.noytse.loginfacebook.model.User;
+import com.example.noytse.loginfacebook.analytics.AnalyticsManager;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.provider.FirebaseInitProvider;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import static android.content.ContentValues.TAG;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Main Activity";
@@ -41,11 +33,16 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private ProductsDatabase mDataBase;
     private boolean mAnonymouseEnable = true;
+    public static Date enterAppTime;
+    public static boolean isInTheApp = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        AnalyticsManager.getInstance().init(getApplicationContext());
+        AnalyticsManager.getInstance().trackAppEntrance();
+
 
 
         boolean isFromProductDetails = getIntent().getBooleanExtra("isFromProductDetails", false);
@@ -62,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
         mEmailPassLogin = new EmailPasswordLogin(this,mAuth);
         SignInButton gmailSignInBtn = (SignInButton)findViewById(R.id.btnGoogleSignIn);
         mGmailLogin = new GmailLogin(this,gmailSignInBtn);
-
         ((AppCompatButton)findViewById(R.id.btnSignIn)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,26 +116,14 @@ public class MainActivity extends AppCompatActivity {
         mFacebookLogin.onActivityResult(requestCode,resultCode,data);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        onLoggedInUser(currentUser);
-
-    }
 
 
     public void onLoggedInUser(FirebaseUser loggedInUser){
         if (loggedInUser != null) {
-        /*    Intent userProfileIntent = new Intent(this,UserProfileActivity.class);
-            userProfileIntent.putExtra(UserProfileActivity.k_UserName, loggedInUser.getDisplayName());
-            userProfileIntent.putExtra(UserProfileActivity.k_UserEmail, loggedInUser.getEmail());
-            if (loggedInUser.getPhotoUrl() != null)
-                userProfileIntent.putExtra(UserProfileActivity.k_UserPhotoURL,loggedInUser.getPhotoUrl().toString());*/
-            Intent productListIntent = new Intent(this,ProductListActivity.class);
-            //TODO try get user from db. on failed, create in the db new user
 
-            startActivity(productListIntent);
+
+            Intent userMoreDetailsIntent = new Intent(this,user_details_form.class);
+            startActivity(userMoreDetailsIntent);
             finish();
         }
     }

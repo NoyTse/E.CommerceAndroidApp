@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -29,7 +28,6 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +51,7 @@ public class ProductListActivity extends AppCompatActivity {
         Log.e("USER_TOKEN", FirebaseInstanceId.getInstance().getToken());
 
         setContentView(R.layout.activity_product_list);
+
 
         ProductsDatabase mDataBase = new ProductsDatabase(myUser,this); //fetch products from db
 
@@ -283,7 +282,9 @@ public class ProductListActivity extends AppCompatActivity {
                     || prod.getproduct().getPrice().contains(searchString))
                 filteredList.put(key,mProductList.get(key));
         }
-        mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(filteredList.values()),getApplicationContext(), myUser));
+        ProductsAdapter productsAdapter = new ProductsAdapter(new ArrayList<ProductWithKey>(filteredList.values()),getApplicationContext(), myUser);
+        productsAdapter.setSearchMode(true);
+        mListView.setAdapter(productsAdapter);
     }
 
     private Map<String,ProductWithKey> getProductList() {
@@ -294,6 +295,7 @@ public class ProductListActivity extends AppCompatActivity {
     private void updateSortedProductList(DataSnapshot snapshot){
         List<ProductWithKey> sortedList = new ArrayList<>();
         mProductList.clear();
+
         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
             Product product = dataSnapshot.getValue(Product.class);
             String key = dataSnapshot.getKey();
@@ -394,4 +396,6 @@ public class ProductListActivity extends AppCompatActivity {
         myUser = new User(fbUser.getEmail(),0, null);
         userRef.child(fbUser.getUid()).setValue(myUser);
     }
+
+
 }

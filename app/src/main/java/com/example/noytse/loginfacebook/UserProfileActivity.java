@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
+import java.util.Date;
+
 public class UserProfileActivity extends AppCompatActivity {
     public static final String k_UserPhotoURL = "photoUrl";
     public static final String k_UserName = "DisplayName";
@@ -40,5 +42,15 @@ public class UserProfileActivity extends AppCompatActivity {
         //Load image
         if (userPhotoUrl != null)
             Picasso.with(this).load(userPhotoUrl).into(imgUserPhoto);
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        if(!MainActivity.isInTheApp) {
+            MainActivity.enterAppTime = new Date();
+            // TODO event- enter app
+        }
     }
 }

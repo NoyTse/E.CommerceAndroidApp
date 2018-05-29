@@ -15,10 +15,7 @@ import com.example.noytse.loginfacebook.model.ProductWithKey;
 import com.example.noytse.loginfacebook.model.User;
 import com.squareup.picasso.Picasso;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by NoyTse on 14/05/2018.
@@ -28,11 +25,13 @@ public class ProductsAdapter extends BaseAdapter {
     private List<ProductWithKey> mProductList;
     private Context mContext;
     private User user;
+    private boolean searchMode ;
 
     public ProductsAdapter(List<ProductWithKey> mProductList, Context mContext, User user) {
         this.mProductList = mProductList;
         this.mContext = mContext;
         this.user = user;
+        this.searchMode = false;
     }
 
     @Override
@@ -82,6 +81,15 @@ public class ProductsAdapter extends BaseAdapter {
             }
         });
 
+        if (searchMode){
+            //TODO (currentProduct = mProductList.get(i)
+           // AnalyticsManager.getInstance().trackSearchEvent(mProductList.get());
+        }
+
         return view;
+    }
+
+    public void setSearchMode(boolean searchMode) {
+        this.searchMode = searchMode;
     }
 }

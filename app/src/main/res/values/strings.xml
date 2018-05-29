@@ -20,4 +20,9 @@
     <string name="addReview_title">type your review here</string>
     <string name="add_review">Add Review</string>
     <string name="purchase_now">purchase now!</string>
+    <string name="userDataRequest">For know you better, please fill the following</string>
+    <string name="default_birthday">01/01/1990</string>
+    <string name="birthday">Birthday:</string>
+    <string name="btnSetBirthday">Set</string>
+    <string name="moreDetails_Send">Continue</string>
 </resources>
