@@ -43,7 +43,7 @@ public class ProductDetails extends AppCompatActivity {
 
 
         mProduct = (ProductWithKey) this.getIntent().getSerializableExtra("Product");
-        if(this.getIntent().hasExtra("FromService")){
+        if(this.getIntent().hasExtra("Product")){
 //            Product productFromService = (Product) this.getIntent().getSerializableExtra("FromService");
 //            if(productFromService != null){
 //                mProduct.setProduct(productFromService);
@@ -155,8 +155,7 @@ public class ProductDetails extends AppCompatActivity {
     }
 
     @Override
-    public void onStop(){
-        super.onStop();
+    public void onUserLeaveHint() {
         AnalyticsManager.getInstance().trackTimeInsideTheApp();
     }
 }
