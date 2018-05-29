@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.noytse.loginfacebook.MainActivity;
+import com.example.noytse.loginfacebook.ProductDetails;
 import com.flurry.android.FlurryAgent;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -12,6 +13,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.concurrent.TimeUnit;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -54,27 +56,39 @@ public class AnalyticsManager {
 
     }
 
-    public void trackPurchase(/*Song song*/) {
+    public void trackPurchase(Product prod) {
 
-//        String eventName = "purchase";
-//        Bundle params = new Bundle();
-//        params.putDouble(FirebaseAnalytics.Param.PRICE,song.getPrice());
-//        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.ECOMMERCE_PURCHASE,params);
-//
-//
-//        //Flurry
-//        Map<String, String> eventParams = new HashMap<String, String>();
-//        eventParams.put("song_genre", song.getGenre());
-//        eventParams.put("song_name", song.getName());
-//        eventParams.put("song_name", song.getArtist());
-//        eventParams.put("song_price",String.valueOf(song.getPrice()));
-//        eventParams.put("song_rating",String.valueOf(song.getRating()));
-//
-//        FlurryAgent.logEvent(eventName,eventParams);
+        String eventName = "purchase";
+        Bundle params = new Bundle();
+        params.putDouble(FirebaseAnalytics.Param.PRICE,Double.parseDouble(prod.getPrice()));
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.ECOMMERCE_PURCHASE,params);
+
+
+        //Flurry
+        Map<String, String> eventParams = new HashMap<String, String>();
+        eventParams.put("prod_name", prod.getName());
+        eventParams.put("song_price",prod.getPrice());
+
+        FlurryAgent.logEvent(eventName,eventParams);
 
     }
 
-    public void trackTimeBetweenPurchaseAndReview(Timestamp timestamp/*not sure*/){
+    // Called when sending a review
+    public void trackTimeBetweenPurchaseAndReview(/*not sure*/){
+        String eventName = "timeBetweenPurchRev";
+        long diffInMillies = ProductDetails.purchaseTime.getTime() - new Date().getTime();
+        long timeBetween = TimeUnit.MILLISECONDS.toSeconds(diffInMillies);
+        int timeBetweenDays = (int)timeBetween/60/60/24;
+
+        //Firebase
+        Bundle params = new Bundle();
+        params.putInt(eventName, timeBetweenDays);
+        mFirebaseAnalytics.logEvent(eventName,params);
+
+        //Flurry
+        Map<String, String> eventParams = new HashMap<String, String>();
+        eventParams.put(eventName,Integer.toString(timeBetweenDays));
+        FlurryAgent.logEvent(eventName, eventParams);
 
     }
 
@@ -109,27 +123,37 @@ public class AnalyticsManager {
     }
 
     public void trackTimeInsideTheApp(Date time/*not sure*/){
+        String eventName = "timeInsideApp";
         long diffInMillies = MainActivity.enterAppTime.getTime() - time.getTime();
-         timeUnit timeInside = timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
-
-    }
-
-    public void trackAppEntrance(Timestamp timestamp){
-        String eventName = "entrance";
+        long timeInside = TimeUnit.MILLISECONDS.toSeconds(diffInMillies);
 
         //Firebase
         Bundle params = new Bundle();
-        params.putString(FirebaseAnalytics.Param.SEARCH_TERM, "App Entramce");
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SEARCH,params);
-        //Firebase
-        //Bundle params = new Bundle();
-        //params.putString(eventName, timestamp.toString());
-        //mFirebaseAnalytics.logEvent(eventName,params);
+        params.putLong(eventName, timeInside);
+        mFirebaseAnalytics.logEvent(eventName,params);
 
         //Flurry
-        //Map<String, String> eventParams = new HashMap<String, String>();
-        //eventParams.put(eventName, timestamp.toString());
-        //FlurryAgent.logEvent(eventName, eventParams);
+        Map<String, String> eventParams = new HashMap<String, String>();
+        eventParams.put(eventName,Long.toString(timeInside));
+        FlurryAgent.logEvent(eventName, eventParams);
+    }
+
+    public void trackAppEntrance(){
+        String eventName = "entrance";
+        Date timestamp= new Date();
+        //Firebase
+        //Bundle params = new Bundle();
+        //params.putString(FirebaseAnalytics.Param.SEARCH_TERM, "App Entramce");
+        //mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SEARCH,params);
+        //Firebase
+        Bundle params = new Bundle();
+        params.putLong(eventName, timestamp.getTime());
+        mFirebaseAnalytics.logEvent(eventName,params);
+
+        //Flurry
+        Map<String, String> eventParams = new HashMap<String, String>();
+        eventParams.put(eventName, timestamp.toString());
+        FlurryAgent.logEvent(eventName, eventParams);
     }
 
     public void init(Context context) {

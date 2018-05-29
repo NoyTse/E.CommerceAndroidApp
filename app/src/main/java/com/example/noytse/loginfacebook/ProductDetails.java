@@ -33,6 +33,7 @@ public class ProductDetails extends AppCompatActivity {
     String key;
     ProductWithKey mProduct;
     boolean mBagWasPurchase;
+    public static Date purchaseTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
