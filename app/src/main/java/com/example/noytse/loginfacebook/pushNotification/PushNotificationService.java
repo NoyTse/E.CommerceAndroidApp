@@ -147,6 +147,7 @@ public class PushNotificationService extends FirebaseMessagingService {
                         m_builder.setSmallIcon(m_smallIcon);
                         m_builder.setContentTitle("Your Title");
                         m_builder.setContentText("Your text");
+                        m_builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bigsunset));
                         m_builder.setPriority(Notification.PRIORITY_MAX);
                         m_builder.setStyle(bigText);
                         m_builder.setAutoCancel(true);
