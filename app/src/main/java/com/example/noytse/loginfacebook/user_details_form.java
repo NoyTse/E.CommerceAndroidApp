@@ -320,6 +320,7 @@ public class user_details_form extends AppCompatActivity {
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    //TODO
                     StringBuilder stringBuilder = new StringBuilder();
                     stringBuilder.append(txtFavoriteCategory);
                     if (b){ //checked
