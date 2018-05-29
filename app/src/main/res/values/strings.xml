@@ -7,7 +7,7 @@
     <string name="sort_nameField">Product Name</string>
     <string name="sort_priceField">Product Price</string>
     <string name="filter_message">Select values to show</string>
-    <string name="filter_shoes">Shoes</string>
+    <string name="filter_shoes">shoes</string>
     <string name="filter_towels">towels</string>
     <string name="filter_bags">bags</string>
     <string name="filter_blue">blue</string>
@@ -25,4 +25,6 @@
     <string name="birthday">Birthday:</string>
     <string name="btnSetBirthday">Set</string>
     <string name="moreDetails_Send">Continue</string>
+    <string name="dateFormat">%1$d/%2$d/%3$d</string>
+    <string name="and_you_interested_in">and you interested in:</string>
 </resources>

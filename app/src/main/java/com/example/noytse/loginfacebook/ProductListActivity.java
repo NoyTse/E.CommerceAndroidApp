@@ -14,6 +14,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.example.noytse.loginfacebook.analytics.AnalyticsManager;
 import com.example.noytse.loginfacebook.model.Product;
 import com.example.noytse.loginfacebook.model.ProductWithKey;
 import com.example.noytse.loginfacebook.model.User;
@@ -110,6 +111,7 @@ public class ProductListActivity extends AppCompatActivity {
                 filterList(charSequence);
             }
 
+
             @Override
             public void afterTextChanged(Editable editable) {}
         });
@@ -132,9 +134,11 @@ public class ProductListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 getCurrentUserParchesedProductsList();
-                for (Integer id : myUser.getMyBags()){
-                    if(mProductList.get(id.toString()) != null)
-                        mProductList.get(id.toString()).setPurchased(true);
+                if(myUser.getMyBags()!=null) {
+                    for (Integer id : myUser.getMyBags()) {
+                        if (mProductList.get(id.toString()) != null)
+                            mProductList.get(id.toString()).setPurchased(true);
+                    }
                 }
                 mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),getApplicationContext(), myUser));
             }
@@ -219,6 +223,12 @@ public class ProductListActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onStop(){
+        super.onStop();
+        AnalyticsManager.getInstance().trackTimeInsideTheApp();
+    }
+
     private void showSortDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setMessage(R.string.sort_message)
@@ -257,9 +267,12 @@ public class ProductListActivity extends AppCompatActivity {
         DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference("products");
         if(orderBy.equals(eSort.NAME)) {
             filteredList = productsReference.orderByChild("name");
+            AnalyticsManager.getInstance().trackSortParameters("name");
+
         }
         else {
             filteredList = productsReference.orderByChild("price");
+            AnalyticsManager.getInstance().trackSortParameters("price");
         }
 
         filteredList.addValueEventListener(new ValueEventListener() {
@@ -308,19 +321,23 @@ public class ProductListActivity extends AppCompatActivity {
     }
 
     public void updateListViewWithSortedProductList(List<ProductWithKey> sortedList) {
-        for (Integer id : myUser.getMyBags()){
-            if(mProductList.get(id.toString()) != null)
-                mProductList.get(id.toString()).setPurchased(true);
+        if(myUser.getMyBags()!=null) {
+            for (Integer id : myUser.getMyBags()) {
+                if (mProductList.get(id.toString()) != null)
+                    mProductList.get(id.toString()).setPurchased(true);
+            }
+            mListView.setAdapter(new ProductsAdapter(sortedList, this, myUser));
         }
-        mListView.setAdapter(new ProductsAdapter(sortedList,this,myUser));
     }
 
     public void updateListView(Map<String,ProductWithKey> prodList) {
         mProductList = prodList;
         if(myUser != null){
-            for (Integer id : myUser.getMyBags()){
-                if(mProductList.get(id.toString()) != null)
-                    mProductList.get(id.toString()).setPurchased(true);
+            if(myUser.getMyBags()!=null) {
+                for (Integer id : myUser.getMyBags()) {
+                    if (mProductList.get(id.toString()) != null)
+                        mProductList.get(id.toString()).setPurchased(true);
+                }
             }
         }
         mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),this,myUser));
@@ -335,20 +352,30 @@ public class ProductListActivity extends AppCompatActivity {
         else
             filteredList = productsReference.orderByChild("category");
 
-        if(filterResult.White)
+        if (filterResult.White) {
             filteredList = filteredList.equalTo("white");
-        else if(filterResult.Red)
+            AnalyticsManager.getInstance().trackFilterParameters("color","white");
+        } else if (filterResult.Red){
             filteredList = filteredList.equalTo("red");
-        else if(filterResult.Blue)
+        AnalyticsManager.getInstance().trackFilterParameters("color","red");
+        }
+        else if(filterResult.Blue) {
             filteredList = filteredList.equalTo("blue");
-
-        else if(filterResult.Bags)
+            AnalyticsManager.getInstance().trackFilterParameters("color","blue");
+        }
+        else if(filterResult.Bags) {
             filteredList = filteredList.equalTo("bags");
-        else if(filterResult.Shoes)
-            filteredList = filteredList.equalTo("shoes");
-        else if(filterResult.Towels)
-            filteredList = filteredList.equalTo("towels");
+            AnalyticsManager.getInstance().trackFilterParameters("category","bags");
 
+        }
+        else if(filterResult.Shoes) {
+            filteredList = filteredList.equalTo("shoes");
+            AnalyticsManager.getInstance().trackFilterParameters("category","Shoes");
+        }
+        else if(filterResult.Towels) {
+            filteredList = filteredList.equalTo("towels");
+            AnalyticsManager.getInstance().trackFilterParameters("category","towels");
+        }
         filteredList.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {

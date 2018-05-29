@@ -3,12 +3,16 @@ package com.example.noytse.loginfacebook.analytics;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.example.noytse.loginfacebook.MainActivity;
+import com.example.noytse.loginfacebook.ProductDetails;
+import com.example.noytse.loginfacebook.model.Product;
 import com.flurry.android.FlurryAgent;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 
-import java.sql.Time;
-import java.sql.Timestamp;
+
+import java.util.concurrent.TimeUnit;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,11 +22,7 @@ public class AnalyticsManager {
     private FirebaseAnalytics mFirebaseAnalytics;
 
 
-    private AnalyticsManager() {
-
-
-
-    }
+    private AnalyticsManager() { }
 
     public static AnalyticsManager getInstance() {
 
@@ -46,27 +46,41 @@ public class AnalyticsManager {
 
     }
 
-    public void trackPurchase(/*Song song*/) {
+    public void trackPurchase(Product prod) {
 
-//        String eventName = "purchase";
-//        Bundle params = new Bundle();
-//        params.putDouble(FirebaseAnalytics.Param.PRICE,song.getPrice());
-//        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.ECOMMERCE_PURCHASE,params);
-//
-//
-//        //Flurry
-//        Map<String, String> eventParams = new HashMap<String, String>();
-//        eventParams.put("song_genre", song.getGenre());
-//        eventParams.put("song_name", song.getName());
-//        eventParams.put("song_name", song.getArtist());
-//        eventParams.put("song_price",String.valueOf(song.getPrice()));
-//        eventParams.put("song_rating",String.valueOf(song.getRating()));
-//
-//        FlurryAgent.logEvent(eventName,eventParams);
+        String eventName = "purchase";
+        Bundle params = new Bundle();
+        params.putString(FirebaseAnalytics.Param.ITEM_NAME,prod.getName());
+        params.putString(FirebaseAnalytics.Param.PRICE,prod.getPrice());
+
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.ECOMMERCE_PURCHASE,params);
+
+        //Flurry
+        Map<String, String> eventParams = new HashMap<String, String>();
+        eventParams.put("prod_name", prod.getName());
+        eventParams.put("price",prod.getPrice());
+
+        FlurryAgent.logEvent(eventName,eventParams);
 
     }
 
-    public void trackTimeBetweenPurchaseAndReview(Timestamp timestamp/*not sure*/){
+    // Called when sending a review
+    public void trackTimeBetweenPurchaseAndReview(){
+        String eventName = "timeBetweenPurchToRev";
+        long diffInMillies = ProductDetails.purchaseTime.getTime() - new Date().getTime();
+
+        //String duration = String.format("%2d:%2d:%2d-%d-days",timeBetweenHours,timeBetweenMinutes,(int)timeBetween,timeBetweenDays)
+        String duration = timeToStr(diffInMillies);
+
+        //Firebase
+        Bundle params = new Bundle();
+        params.putString(eventName, duration);
+        mFirebaseAnalytics.logEvent(eventName,params);
+
+        //Flurry
+        Map<String, String> eventParams = new HashMap<String, String>();
+        eventParams.put(eventName,duration);
+        FlurryAgent.logEvent(eventName, eventParams);
 
     }
 
@@ -87,23 +101,83 @@ public class AnalyticsManager {
     }
 
     public void trackSortParameters(String sortParameter){
-
-    }
-
-    public void trackTimeInsideTheApp(Time time/*not sure*/){
-
-    }
-
-    public void trackAppEntrance(){
+        String eventName = "sort";
 
         //Firebase
         Bundle params = new Bundle();
-        params.putString("User", "example");
-        mFirebaseAnalytics.logEvent("App_entrance",params);
+        params.putString(FirebaseAnalytics.Param.SEARCH_TERM, sortParameter);
+        mFirebaseAnalytics.logEvent(eventName,params);
 
+        //Flurry
         Map<String, String> eventParams = new HashMap<String, String>();
-        eventParams.put("User", "example");
-        FlurryAgent.logEvent("App_entrance", eventParams);
+        eventParams.put("search term", sortParameter);
+        FlurryAgent.logEvent(eventName, eventParams);
+    }
+
+    public void trackFilterParameters(String filterType,String filterParameter){
+        String eventName = "filter";
+
+        //Firebase
+        Bundle params = new Bundle();
+        params.putString("filter_by", filterParameter);
+        params.putString("filter_Type", filterType);
+        mFirebaseAnalytics.logEvent(eventName,params);
+
+        //Flurry
+        Map<String, String> eventParams = new HashMap<String, String>();
+        eventParams.put("filter by", filterParameter);
+        eventParams.put("filter_Type", filterType);
+        FlurryAgent.logEvent(eventName, eventParams);
+    }
+
+    public void trackTimeInsideTheApp(){
+        String eventName = "timeInsideApp";
+        Date time = new Date();
+        long diffInMillies = MainActivity.enterAppTime.getTime() - time.getTime();
+        long timeInside = TimeUnit.MILLISECONDS.toSeconds(diffInMillies);
+
+        //Firebase
+        Bundle params = new Bundle();
+        params.putLong(eventName, timeInside);
+        mFirebaseAnalytics.logEvent(eventName,params);
+
+        //Flurry
+        Map<String, String> eventParams = new HashMap<String, String>();
+        eventParams.put(eventName,Long.toString(timeInside));
+        FlurryAgent.logEvent(eventName, eventParams);
+    }
+
+    private String timeToStr(long milli)
+    {
+        long second = (milli / 1000) % 60;
+        long minute = (milli / (1000 * 60)) % 60;
+        long hour = (milli / (1000 * 60 * 60)) % 24;
+        long days = milli/(1000*60*60*24);
+
+        String time = String.format("%02d:%02d:%02d %d days", hour, minute, second, days);
+
+       /* long timeBetween = TimeUnit.MILLISECONDS.toSeconds(milli);
+        int timeBetweenDays,timeBetweenHours,timeBetweenMinutes;
+        timeBetweenDays= (int)timeBetween/60/60/24;
+        timeBetween = (int)timeBetween - (int)timeBetween*60*60*24;
+        timeBetweenHours = (int)timeBetween/60/60;
+        timeBetween = (int)timeBetween - (int)timeBetween*60*60;
+        timeBetweenMinutes = (int)timeBetween/60;
+        timeBetween = (int)timeBetween - (int)timeBetween*60;
+*/
+        //return String.format("%2d:%2d:%2d-%d-days",timeBetweenHours,timeBetweenMinutes,(int)timeBetween,timeBetweenDays);
+        return time;
+    }
+    public void trackAppEntrance(){
+        String eventName = "entrance";
+        Bundle params = new Bundle();
+        params.putString(eventName, MainActivity.enterAppTime.toString());
+        mFirebaseAnalytics.logEvent(eventName,params  );
+
+        //Flurry
+        Map<String, String> eventParams = new HashMap<String, String>();
+        eventParams.put(eventName, MainActivity.enterAppTime.toString());
+        FlurryAgent.logEvent(eventName, eventParams);
     }
 
     public void init(Context context) {

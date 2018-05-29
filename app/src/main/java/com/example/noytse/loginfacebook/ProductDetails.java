@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.noytse.loginfacebook.analytics.AnalyticsManager;
 import com.example.noytse.loginfacebook.model.Product;
 import com.example.noytse.loginfacebook.model.ProductWithKey;
 import com.example.noytse.loginfacebook.model.User;
@@ -33,6 +34,7 @@ public class ProductDetails extends AppCompatActivity {
     String key;
     ProductWithKey mProduct;
     boolean mBagWasPurchase;
+    public static Date purchaseTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +98,8 @@ public class ProductDetails extends AppCompatActivity {
                 }
                 else{
                     if (!mProduct.isPurchased()) {
+                        purchaseTime = new Date();
+                        AnalyticsManager.getInstance().trackPurchase(mProduct.getproduct());
                         mProduct.setPurchased(true);
                         user.upgdateTotalPurchase(Float.parseFloat(mProduct.getproduct().getPrice().replace("$","")));
                         if (user.getMyBags() == null)
@@ -139,6 +143,7 @@ public class ProductDetails extends AppCompatActivity {
                     Map<String,Object> updatedProductForSavingInDB = new HashMap<String, Object>();
                     updatedProductForSavingInDB.put(mProduct.getKey(),mProduct.getproduct());
                     productListDB.updateChildren(updatedProductForSavingInDB);
+                    AnalyticsManager.getInstance().trackTimeBetweenPurchaseAndReview();
                 }
 
                 dialog.dismiss();
@@ -150,12 +155,8 @@ public class ProductDetails extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart()
-    {
-        super.onStart();
-        if (!MainActivity.isInTheApp) {
-            MainActivity.enterAppTime = new Date();
-            // TODO event- enter app
-        }
+    public void onStop(){
+        super.onStop();
+        AnalyticsManager.getInstance().trackTimeInsideTheApp();
     }
 }

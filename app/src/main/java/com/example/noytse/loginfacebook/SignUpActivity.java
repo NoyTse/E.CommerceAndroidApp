@@ -39,15 +39,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onStart()
-    {
-        super.onStart();
-        MainActivity.enterAppTime=new Date();
-        // TODO event- enter app
-       // AnalyticsManager.getInstance().trackAppEntrance();
-        //Log.e("OnStartsss","OnStartsss");
-    }
+
 
     public void onSignUpClick(View view) {
 
@@ -93,5 +85,10 @@ public class SignUpActivity extends AppCompatActivity {
                         // ...
                     }
                 });
+    }
+    @Override
+    public void onStop(){
+        super.onStop();
+        AnalyticsManager.getInstance().trackTimeInsideTheApp();
     }
 }
