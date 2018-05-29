@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         AnalyticsManager.getInstance().init(getApplicationContext());
         AnalyticsManager.getInstance().trackAppEntrance();
-
+        enterAppTime=new Date();
 
 
         boolean isFromProductDetails = getIntent().getBooleanExtra("isFromProductDetails", false);

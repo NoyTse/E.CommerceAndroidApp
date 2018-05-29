@@ -354,27 +354,27 @@ public class ProductListActivity extends AppCompatActivity {
 
         if (filterResult.White) {
             filteredList = filteredList.equalTo("white");
-            AnalyticsManager.getInstance().trackFilterParameters("white");
+            AnalyticsManager.getInstance().trackFilterParameters("color","white");
         } else if (filterResult.Red){
             filteredList = filteredList.equalTo("red");
-        AnalyticsManager.getInstance().trackFilterParameters("red");
+        AnalyticsManager.getInstance().trackFilterParameters("color","red");
         }
         else if(filterResult.Blue) {
             filteredList = filteredList.equalTo("blue");
-            AnalyticsManager.getInstance().trackFilterParameters("blue");
+            AnalyticsManager.getInstance().trackFilterParameters("color","blue");
         }
         else if(filterResult.Bags) {
             filteredList = filteredList.equalTo("bags");
-            AnalyticsManager.getInstance().trackFilterParameters("bags");
+            AnalyticsManager.getInstance().trackFilterParameters("category,""bags");
 
         }
         else if(filterResult.Shoes) {
             filteredList = filteredList.equalTo("shoes");
-            AnalyticsManager.getInstance().trackFilterParameters("Shoes");
+            AnalyticsManager.getInstance().trackFilterParameters("category","Shoes");
         }
         else if(filterResult.Towels) {
             filteredList = filteredList.equalTo("towels");
-            AnalyticsManager.getInstance().trackFilterParameters("towels");
+            AnalyticsManager.getInstance().trackFilterParameters("category","towels");
         }
         filteredList.addValueEventListener(new ValueEventListener() {
             @Override
