@@ -1,5 +1,9 @@
 package com.example.noytse.loginfacebook;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,15 +11,27 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.noytse.loginfacebook.analytics.AnalyticsManager;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.lang.reflect.Array;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class user_details_form extends AppCompatActivity {
     private String[] countryList = new String[]{
@@ -264,37 +280,26 @@ public class user_details_form extends AppCompatActivity {
             "Zambia",
             "Zimbabwe",
     };
+    private String txtBirthday;
+    private String txtCountry;
+    private String txtGender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_details_form);
 
-        final Spinner spinner = findViewById(R.id.spinnerCountry);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i > 0){
-                    Toast.makeText(getApplicationContext(), countryList[i],Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,countryList);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        spinner.setAdapter(adapter);
+        initializeCountrySpinner();
+        initializeBirthdayDatePicker();
 
         findViewById(R.id.btnUserDetailContinue).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent productListIntent = new Intent(user_details_form.this,ProductListActivity.class);
-                startActivity(productListIntent);
+                if(validateFields()) {
+                    updateUserProperties();
+                    Intent productListIntent = new Intent(user_details_form.this, ProductListActivity.class);
+                    startActivity(productListIntent);
+                }
             }
         });
     }
@@ -302,5 +307,54 @@ public class user_details_form extends AppCompatActivity {
     public void onStop(){
         super.onStop();
         AnalyticsManager.getInstance().trackTimeInsideTheApp();
+    }
+
+    private void updateUserProperties() {
+        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(user_details_form.this);
+        firebaseAnalytics.setUserProperty("Country",txtCountry);
+        firebaseAnalytics.setUserProperty("DateOfBirth",txtBirthday);
+        firebaseAnalytics.setUserProperty("Gender",txtGender);
+        firebaseAnalytics.setUserProperty("JoinToApp",new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
+    }
+
+
+    private boolean validateFields() {
+        txtBirthday = ((TextView)findViewById(R.id.lblSelectedBirthday)).getText().toString();
+        txtCountry = ((Spinner)findViewById(R.id.spinnerCountry)).getSelectedItem().toString();
+        txtGender = ((Switch)findViewById(R.id.switchGender)).isChecked() ? "Female" : "Male";
+        if (txtBirthday.equals(getResources().getString(R.string.default_birthday))){
+            Toast.makeText(user_details_form.this,"Must set birthday",Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(txtCountry.equals(countryList[0])){
+            Toast.makeText(user_details_form.this,"Must set Country",Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    private void initializeBirthdayDatePicker() {
+        findViewById(R.id.btnSetBirthday).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final TextView userBirthday = findViewById(R.id.lblSelectedBirthday);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(user_details_form.this);
+                datePickerDialog.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int i_year, int i_month, int i_day) {
+                        String birthdayStr = getResources().getString(R.string.dateFormat,i_day,i_month,i_year);
+                        userBirthday.setText(birthdayStr);
+                    }
+                });
+                datePickerDialog.show();
+            }
+        });
+    }
+
+    private void initializeCountrySpinner() {
+        final Spinner spinner = findViewById(R.id.spinnerCountry);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,countryList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
     }
 }
