@@ -365,7 +365,7 @@ public class ProductListActivity extends AppCompatActivity {
         }
         else if(filterResult.Bags) {
             filteredList = filteredList.equalTo("bags");
-            AnalyticsManager.getInstance().trackFilterParameters("category,""bags");
+            AnalyticsManager.getInstance().trackFilterParameters("category","bags");
 
         }
         else if(filterResult.Shoes) {
