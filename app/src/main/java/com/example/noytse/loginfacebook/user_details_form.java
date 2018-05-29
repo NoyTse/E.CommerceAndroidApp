@@ -17,6 +17,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.noytse.loginfacebook.analytics.AnalyticsManager;
+
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -300,6 +302,11 @@ public class user_details_form extends AppCompatActivity {
                 }
             }
         });
+    }
+    @Override
+    public void onStop(){
+        super.onStop();
+        AnalyticsManager.getInstance().trackTimeInsideTheApp();
     }
 
     private void updateUserProperties() {

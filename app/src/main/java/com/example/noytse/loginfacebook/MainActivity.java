@@ -5,33 +5,23 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.noytse.loginfacebook.model.User;
+import com.example.noytse.loginfacebook.analytics.AnalyticsManager;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.provider.FirebaseInitProvider;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
-import java.sql.Time;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import static android.content.ContentValues.TAG;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Main Activity";
@@ -50,7 +40,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        AnalyticsManager.getInstance().init(getApplicationContext());
+        AnalyticsManager.getInstance().trackAppEntrance();
+        enterAppTime=new Date();
 
 
         boolean isFromProductDetails = getIntent().getBooleanExtra("isFromProductDetails", false);
@@ -67,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
         mEmailPassLogin = new EmailPasswordLogin(this,mAuth);
         SignInButton gmailSignInBtn = (SignInButton)findViewById(R.id.btnGoogleSignIn);
         mGmailLogin = new GmailLogin(this,gmailSignInBtn);
-
         ((AppCompatButton)findViewById(R.id.btnSignIn)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,6 +75,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(signUpIntent);
             }
         });
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        AnalyticsManager.getInstance().trackTimeInsideTheApp();
     }
 
     private void checkAnonymouseEnable() {

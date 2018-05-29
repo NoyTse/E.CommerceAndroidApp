@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.noytse.loginfacebook.analytics.AnalyticsManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
@@ -45,12 +46,8 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart()
-    {
-        super.onStart();
-        if(!MainActivity.isInTheApp) {
-            MainActivity.enterAppTime = new Date();
-            // TODO event- enter app
-        }
+    public void onStop(){
+        super.onStop();
+        AnalyticsManager.getInstance().trackTimeInsideTheApp();
     }
 }

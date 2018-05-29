@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
+import com.example.noytse.loginfacebook.analytics.AnalyticsManager;
+
 import java.util.Date;
 
 public class SplashScreen extends AppCompatActivity {
@@ -13,7 +15,6 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-
         new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {
@@ -23,16 +24,5 @@ public class SplashScreen extends AppCompatActivity {
             }
         }, 3000);
 
-    }
-
-
-    @Override
-    protected void onStart()
-    {
-        super.onStart();
-        if(!MainActivity.isInTheApp) {
-            MainActivity.enterAppTime = new Date();
-            // TODO event- enter app
-        }
     }
 }
