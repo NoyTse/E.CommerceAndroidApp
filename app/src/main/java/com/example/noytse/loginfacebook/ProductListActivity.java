@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -27,9 +26,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -294,6 +291,7 @@ public class ProductListActivity extends AppCompatActivity {
     private void updateSortedProductList(DataSnapshot snapshot){
         List<ProductWithKey> sortedList = new ArrayList<>();
         mProductList.clear();
+
         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
             Product product = dataSnapshot.getValue(Product.class);
             String key = dataSnapshot.getKey();
