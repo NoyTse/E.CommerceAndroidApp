@@ -281,7 +281,9 @@ public class ProductListActivity extends AppCompatActivity {
                     || prod.getproduct().getPrice().contains(searchString))
                 filteredList.put(key,mProductList.get(key));
         }
-        mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(filteredList.values()),getApplicationContext(), myUser));
+        ProductsAdapter productsAdapter = new ProductsAdapter(new ArrayList<ProductWithKey>(filteredList.values()),getApplicationContext(), myUser);
+        productsAdapter.setSearchMode(true);
+        mListView.setAdapter(productsAdapter);
     }
 
     private Map<String,ProductWithKey> getProductList() {

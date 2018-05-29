@@ -119,13 +119,17 @@ public class AnalyticsManager {
 
         //Firebase
         Bundle params = new Bundle();
-        params.putString(eventName, timestamp.toString());
-        mFirebaseAnalytics.logEvent(eventName,params);
+        params.putString(FirebaseAnalytics.Param.SEARCH_TERM, "App Entramce");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SEARCH,params);
+        //Firebase
+        //Bundle params = new Bundle();
+        //params.putString(eventName, timestamp.toString());
+        //mFirebaseAnalytics.logEvent(eventName,params);
 
         //Flurry
-        Map<String, String> eventParams = new HashMap<String, String>();
-        eventParams.put(eventName, timestamp.toString());
-        FlurryAgent.logEvent(eventName, eventParams);
+        //Map<String, String> eventParams = new HashMap<String, String>();
+        //eventParams.put(eventName, timestamp.toString());
+        //FlurryAgent.logEvent(eventName, eventParams);
     }
 
     public void init(Context context) {

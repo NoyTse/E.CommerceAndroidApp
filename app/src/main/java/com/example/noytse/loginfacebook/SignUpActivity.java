@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.noytse.loginfacebook.R;
+import com.example.noytse.loginfacebook.model.AnalyticsManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -46,6 +47,8 @@ public class SignUpActivity extends AppCompatActivity {
         super.onStart();
         MainActivity.enterAppTime=new Date();
         // TODO event- enter app
+        AnalyticsManager.getInstance().trackAppEntrance();
+        //Log.e("OnStartsss","OnStartsss");
     }
 
     public void onSignUpClick(View view) {
@@ -79,6 +82,7 @@ public class SignUpActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            AnalyticsManager.getInstance().trackSignupEvent(user.getDisplayName());
                             finish();
                         } else {
                             // If sign in fails, display a message to the user.
