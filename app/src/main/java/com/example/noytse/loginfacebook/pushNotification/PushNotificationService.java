@@ -182,6 +182,7 @@ public class PushNotificationService extends FirebaseMessagingService {
 
                 m_builder.setContentIntent(pendingIntent);
                 m_builder.setSmallIcon(m_smallIcon);
+                m_builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_bigsunset));
                 m_builder.setContentTitle(m_bigText);
                 m_builder.setContentText(m_disc);
                 m_builder.setPriority(Notification.PRIORITY_MAX);
