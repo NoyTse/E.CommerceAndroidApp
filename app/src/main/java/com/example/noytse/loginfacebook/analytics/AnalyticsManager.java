@@ -2,25 +2,19 @@ package com.example.noytse.loginfacebook.analytics;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.example.noytse.loginfacebook.MainActivity;
 import com.example.noytse.loginfacebook.ProductDetails;
+import com.example.noytse.loginfacebook.model.Product;
 import com.flurry.android.FlurryAgent;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.concurrent.TimeUnit;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class AnalyticsManager {
     private static String TAG = "AnalyticsManager";
@@ -74,7 +68,7 @@ public class AnalyticsManager {
     }
 
     // Called when sending a review
-    public void trackTimeBetweenPurchaseAndReview(/*not sure*/){
+    public void trackTimeBetweenPurchaseAndReview(){
         String eventName = "timeBetweenPurchRev";
         long diffInMillies = ProductDetails.purchaseTime.getTime() - new Date().getTime();
         long timeBetween = TimeUnit.MILLISECONDS.toSeconds(diffInMillies);
@@ -122,8 +116,23 @@ public class AnalyticsManager {
         FlurryAgent.logEvent(eventName, eventParams);
     }
 
-    public void trackTimeInsideTheApp(Date time/*not sure*/){
+    public void trackFilterParameters(String filterParameter){
+        String eventName = "sort";
+
+        //Firebase
+        Bundle params = new Bundle();
+        params.putString(FirebaseAnalytics.Param.SEARCH_TERM, filterParameter);
+        mFirebaseAnalytics.logEvent(eventName,params);
+
+        //Flurry
+        Map<String, String> eventParams = new HashMap<String, String>();
+        eventParams.put("search term", filterParameter);
+        FlurryAgent.logEvent(eventName, eventParams);
+    }
+
+    public void trackTimeInsideTheApp(){
         String eventName = "timeInsideApp";
+        Date time = new Date();
         long diffInMillies = MainActivity.enterAppTime.getTime() - time.getTime();
         long timeInside = TimeUnit.MILLISECONDS.toSeconds(diffInMillies);
 
@@ -141,6 +150,7 @@ public class AnalyticsManager {
     public void trackAppEntrance(){
         String eventName = "entrance";
         Date timestamp= new Date();
+        MainActivity.enterAppTime=timestamp;
         //Firebase
         //Bundle params = new Bundle();
         //params.putString(FirebaseAnalytics.Param.SEARCH_TERM, "App Entramce");

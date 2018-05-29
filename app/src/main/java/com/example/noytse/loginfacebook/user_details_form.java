@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.noytse.loginfacebook.analytics.AnalyticsManager;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -295,5 +297,10 @@ public class user_details_form extends AppCompatActivity {
                 startActivity(productListIntent);
             }
         });
+    }
+    @Override
+    public void onStop(){
+        super.onStop();
+        AnalyticsManager.getInstance().trackTimeInsideTheApp();
     }
 }

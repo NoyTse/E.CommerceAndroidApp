@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.noytse.loginfacebook.analytics.AnalyticsManager;
 import com.example.noytse.loginfacebook.model.Product;
 import com.example.noytse.loginfacebook.model.ProductWithKey;
 import com.example.noytse.loginfacebook.model.User;
@@ -83,7 +84,7 @@ public class ProductsAdapter extends BaseAdapter {
 
         if (searchMode){
             //TODO (currentProduct = mProductList.get(i)
-           // AnalyticsManager.getInstance().trackSearchEvent(mProductList.get());
+           AnalyticsManager.getInstance().trackSearchEvent(mProductList.get(i).toString());
         }
 
         return view;

@@ -7,12 +7,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.example.noytse.loginfacebook.analytics.AnalyticsManager;
 import com.example.noytse.loginfacebook.model.Product;
 import com.example.noytse.loginfacebook.model.ProductWithKey;
 import com.example.noytse.loginfacebook.model.User;
@@ -108,6 +110,7 @@ public class ProductListActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 filterList(charSequence);
             }
+
 
             @Override
             public void afterTextChanged(Editable editable) {}
@@ -218,6 +221,12 @@ public class ProductListActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onStop(){
+        super.onStop();
+        AnalyticsManager.getInstance().trackTimeInsideTheApp();
+    }
+
     private void showSortDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setMessage(R.string.sort_message)
@@ -256,9 +265,12 @@ public class ProductListActivity extends AppCompatActivity {
         DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference("products");
         if(orderBy.equals(eSort.NAME)) {
             filteredList = productsReference.orderByChild("name");
+            AnalyticsManager.getInstance().trackSortParameters("name");
+
         }
         else {
             filteredList = productsReference.orderByChild("price");
+            AnalyticsManager.getInstance().trackSortParameters("price");
         }
 
         filteredList.addValueEventListener(new ValueEventListener() {
@@ -334,20 +346,30 @@ public class ProductListActivity extends AppCompatActivity {
         else
             filteredList = productsReference.orderByChild("category");
 
-        if(filterResult.White)
+        if (filterResult.White) {
             filteredList = filteredList.equalTo("white");
-        else if(filterResult.Red)
+            AnalyticsManager.getInstance().trackFilterParameters("white");
+        } else if (filterResult.Red){
             filteredList = filteredList.equalTo("red");
-        else if(filterResult.Blue)
+        AnalyticsManager.getInstance().trackFilterParameters("red");
+        }
+        else if(filterResult.Blue) {
             filteredList = filteredList.equalTo("blue");
-
-        else if(filterResult.Bags)
+            AnalyticsManager.getInstance().trackFilterParameters("blue");
+        }
+        else if(filterResult.Bags) {
             filteredList = filteredList.equalTo("bags");
-        else if(filterResult.Shoes)
-            filteredList = filteredList.equalTo("shoes");
-        else if(filterResult.Towels)
-            filteredList = filteredList.equalTo("towels");
+            AnalyticsManager.getInstance().trackFilterParameters("bags");
 
+        }
+        else if(filterResult.Shoes) {
+            filteredList = filteredList.equalTo("shoes");
+            AnalyticsManager.getInstance().trackFilterParameters("Shoes");
+        }
+        else if(filterResult.Towels) {
+            filteredList = filteredList.equalTo("towels");
+            AnalyticsManager.getInstance().trackFilterParameters("towels");
+        }
         filteredList.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {

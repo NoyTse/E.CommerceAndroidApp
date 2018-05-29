@@ -77,6 +77,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onStop(){
+        super.onStop();
+        AnalyticsManager.getInstance().trackTimeInsideTheApp();
+    }
+
     private void checkAnonymouseEnable() {
         final String anonymosParamName = "AnonymouseEnable";
         Map<String,Object> remoteParams = new HashMap<>();

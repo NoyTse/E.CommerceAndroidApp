@@ -25,15 +25,4 @@ public class SplashScreen extends AppCompatActivity {
         }, 3000);
 
     }
-
-
-    @Override
-    protected void onStart()
-    {
-        super.onStart();
-        if(!MainActivity.isInTheApp) {
-            MainActivity.enterAppTime = new Date();
-            // TODO event- enter app
-        }
-    }
 }
