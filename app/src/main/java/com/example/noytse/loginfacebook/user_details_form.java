@@ -285,7 +285,7 @@ public class user_details_form extends AppCompatActivity {
     private String txtBirthday;
     private String txtCountry;
     private String txtGender;
-    private String txtFavoriteCategory;
+    private String txtFavoriteCategory = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -320,21 +320,21 @@ public class user_details_form extends AppCompatActivity {
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    //TODO
                     StringBuilder stringBuilder = new StringBuilder();
                     stringBuilder.append(txtFavoriteCategory);
                     if (b){ //checked
-                        if (!txtFavoriteCategory.contains(checkBox.getText())){
-                            if (txtFavoriteCategory != null){
+                        if (!txtFavoriteCategory.contains(currCheckBox.getText())){
+                            if (txtFavoriteCategory.length() > 0){
                                 stringBuilder.append(';');
                             }
-                            stringBuilder.append(checkBox.getText());
+                            stringBuilder.append(currCheckBox.getText());
                             txtFavoriteCategory = stringBuilder.toString();
                         }
                     } else {
-                        if (txtFavoriteCategory.contains(checkBox.getText())){
-                            txtFavoriteCategory.replace(checkBox.getText() + ";","");
-                            txtFavoriteCategory.replace(checkBox.getText(),"");
+                        if (txtFavoriteCategory.contains(currCheckBox.getText())){
+                            txtFavoriteCategory = txtFavoriteCategory.replace( ";" + currCheckBox.getText(),"");
+                            txtFavoriteCategory = txtFavoriteCategory.replace( currCheckBox.getText() + ";","");
+                            txtFavoriteCategory = txtFavoriteCategory.replace(currCheckBox.getText(),"");
                         }
                     }
                 }

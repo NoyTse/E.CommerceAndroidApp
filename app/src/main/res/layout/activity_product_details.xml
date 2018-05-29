@@ -28,69 +28,69 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Category: "
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentLeft="true"/>
         <TextView
             android:id="@+id/prodDetail_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="My Categoryryy"
-            android:layout_toStartOf="@id/categoryLbl"/>
+            android:layout_toRightOf="@id/categoryLbl"/>
         <TextView
             android:id="@+id/colorLbl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Color: "
             android:layout_below="@id/categoryLbl"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentLeft="true"/>
         <TextView
             android:id="@+id/prodDetail_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="My Categy"
             android:layout_below="@id/prodDetail_category"
-            android:layout_toStartOf="@id/colorLbl"/>
+            android:layout_toRightOf="@id/colorLbl"/>
         <TextView
             android:id="@+id/existLbl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Avaiable in stock: "
             android:layout_below="@id/colorLbl"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentLeft="true"/>
         <TextView
             android:id="@+id/prodDetail_exist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Yes!"
             android:layout_below="@id/prodDetail_color"
-            android:layout_toStartOf="@id/existLbl"/>
+            android:layout_toRightOf="@id/existLbl"/>
         <TextView
             android:id="@+id/sizeLbl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Size: "
             android:layout_below="@id/existLbl"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentLeft="true"/>
         <TextView
             android:id="@+id/prodDetail_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="20cm"
             android:layout_below="@id/prodDetail_exist"
-            android:layout_toStartOf="@id/sizeLbl"/>
+            android:layout_toRightOf="@id/sizeLbl"/>
         <TextView
             android:id="@+id/materialLbl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Material: "
             android:layout_below="@id/sizeLbl"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentLeft="true"/>
         <TextView
             android:id="@+id/prodDetail_material"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sha am"
             android:layout_below="@id/prodDetail_size"
-            android:layout_toStartOf="@id/materialLbl"/>
+            android:layout_toRightOf="@id/materialLbl"/>
     </RelativeLayout>
     <TextView
         android:id="@+id/prodDetail_price"
