@@ -76,21 +76,54 @@
             android:text="@string/btnSetBirthday"
             android:layout_marginHorizontal="30dp"/>
     </LinearLayout>
+    <TextView
+        android:id="@+id/lblInterestingIn"
+        android:paddingTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/and_you_interested_in"
+        android:layout_below="@id/containerBirthday"/>
+    <LinearLayout
+        android:id="@+id/containerCheckBoxes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lblInterestingIn"
+        android:weightSum="100"
+        android:orientation="horizontal">
+        <CheckBox
+            android:id="@+id/moreDetails_bags"
+            android:layout_width="0dp"
+            android:layout_weight="33"
+            android:layout_height="wrap_content"
+            android:text="@string/filter_bags"/>
+        <CheckBox
+            android:id="@+id/moreDetails_towels"
+            android:layout_width="0dp"
+            android:layout_weight="33"
+            android:layout_height="wrap_content"
+            android:text="@string/filter_towels"/>
+        <CheckBox
+            android:id="@+id/moreDetails_shoes"
+            android:layout_width="0dp"
+            android:layout_weight="33"
+            android:layout_height="wrap_content"
+            android:text="@string/filter_shoes"/>
+    </LinearLayout>
     <View
-        android:layout_below="@id/containerBirthday"
+        android:layout_below="@id/containerCheckBoxes"
         android:layout_width="match_parent"
         android:layout_marginTop="40dp"
         android:layout_height="2dp"
         android:background="@color/colorPrimary"/>
     <View
-        android:layout_below="@id/containerBirthday"
+        android:layout_below="@id/containerCheckBoxes"
         android:layout_width="match_parent"
         android:layout_marginTop="50dp"
         android:layout_height="2dp"
         android:layout_marginHorizontal="30dp"
         android:background="@color/colorPrimary"/>
     <View
-        android:layout_below="@id/containerBirthday"
+        android:layout_below="@id/containerCheckBoxes"
         android:layout_width="match_parent"
         android:layout_marginTop="60dp"
         android:layout_height="2dp"
@@ -102,6 +135,6 @@
         android:layout_height="wrap_content"
         android:text="@string/moreDetails_Send"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/containerBirthday"
+        android:layout_below="@id/containerCheckBoxes"
         android:layout_marginTop="70dp"/>
 </RelativeLayout>

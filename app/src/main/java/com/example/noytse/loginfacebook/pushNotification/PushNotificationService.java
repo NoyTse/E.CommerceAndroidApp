@@ -1,18 +1,32 @@
 package com.example.noytse.loginfacebook.pushNotification;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.noytse.loginfacebook.MainActivity;
+import com.example.noytse.loginfacebook.ProductDetails;
+import com.example.noytse.loginfacebook.ProductListActivity;
 import com.example.noytse.loginfacebook.R;
+import com.example.noytse.loginfacebook.model.Product;
+import com.example.noytse.loginfacebook.model.ProductWithKey;
+import com.example.noytse.loginfacebook.model.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -21,7 +35,14 @@ import java.util.Map;
 public class PushNotificationService extends FirebaseMessagingService {
 
     private static final String TAG ="PushNotificationService";
-
+    private User m_user;
+    private Product m_product;
+    private NotificationCompat.Builder m_builder;
+    private String m_bigText;
+    private String m_disc;
+    private int m_smallIcon;
+    private ProductWithKey m_productWithKey;
+    private Uri m_soundUri;
 
     public PushNotificationService() {
     }
@@ -29,18 +50,14 @@ public class PushNotificationService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        Log.e(TAG, "onMessageReceived() >>");
+        m_builder =
+                new NotificationCompat.Builder(this, "notify_001");
+        m_smallIcon = R.drawable.ic_notifications_black_24dp;
+        m_soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Map<String,String> data;
         String title = "title";
         String body = "body";
-        int icon = R.drawable.ic_notifications_black_24dp;
-        Uri soundRri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        Map<String,String> data;
         RemoteMessage.Notification notification;
-
-
-        // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
-        Log.e(TAG, "From: " + remoteMessage.getFrom());
-
 
         if (remoteMessage.getNotification() == null) {
             Log.e(TAG, "onMessageReceived() >> Notification is empty");
@@ -48,81 +65,118 @@ public class PushNotificationService extends FirebaseMessagingService {
             notification = remoteMessage.getNotification();
             title = notification.getTitle();
             body = notification.getBody();
-            Log.e(TAG, "onMessageReceived() >> title: " + title + " , body="+body);
-        }
-        // Check if message contains a data payload.
-        if (remoteMessage.getData().size() == 0) {
-            Log.e(TAG, "onMessageReceived() << No data doing nothing");
-            return;
+            Log.e(TAG, "onMessageReceived() >> title: " + title + " , body=" + body);
         }
 
-
-        //parse the data
         data = remoteMessage.getData();
-        Log.e(TAG, "Message data : " + data);
-
         String value = data.get("title");
         if (value != null) {
-            title = value;
+            m_bigText = value;
         }
 
-        value = data.get("body");
+        value = data.get("discription");
         if (value != null) {
-            body = value;
+            m_disc = value;
         }
 
         value = data.get("small_icon");
-        if (value != null  && value.equals("alarm")) {
-            icon = R.drawable.ic_alarm_black_24dp;
-        }
-        value = data.get("sound");
-        if (value != null) {
-            if (value.equals("alert")) {
-                soundRri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-            } else if (value.equals("ringtone")) {
-                soundRri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+        if(value != null){
+            if(value.equals("summer")){
+                m_smallIcon = R.mipmap.ic_sun;
             }
         }
 
-        Intent intent = new Intent(this, MainActivity.class);
+        final DatabaseReference myUserRef = FirebaseDatabase.getInstance().getReference();
+        myUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                m_user = dataSnapshot.child("Users/" + FirebaseAuth.getInstance().getUid()).getValue(User.class);
+                m_product = dataSnapshot.child("products/" + 0).getValue(Product.class);
+                Product newProduct = new Product(
+                        m_product.getName(),
+                        m_product.getCategory(),
+                        m_product.getColor(),
+                        m_product.getAvailableInStock(),
+                        m_product.getSize(),
+                        m_product.getMaterial(),
+                        m_product.getPhotoURL(),
+                        m_product.getPrice(),
+                        m_product.getReviewList());
+                m_productWithKey = new ProductWithKey(newProduct, "0");
 
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 , intent,
-                PendingIntent.FLAG_ONE_SHOT);
+                Intent intentToInvoke = new Intent(getApplicationContext(), ProductDetails.class);
+                intentToInvoke.putExtra("Product", m_productWithKey);
+                intentToInvoke.putExtra("FromService", "hello world");
+                intentToInvoke.putExtra("user_email",m_user.getEmail());
+                intentToInvoke.putExtra("user_ParchesedList",m_user.getMyBags());
+                intentToInvoke.putExtra("user_total",m_user.getTotalPurchase());
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intentToInvoke, 0);
 
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this, null)
-                        .setContentTitle(title)
-                        .setContentText(body)
-                        .setContentIntent(pendingIntent)
-                        .setSmallIcon(icon)
-                        .setSound(soundRri)
-                        .setAutoCancel(true)
-                        .setPriority(Notification.PRIORITY_MAX);;
+                NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
+                bigText.bigText(m_bigText);
+                bigText.setBigContentTitle(m_disc);
+
+                m_builder.setContentIntent(pendingIntent);
+                m_builder.setSmallIcon(m_smallIcon);
+                m_builder.setContentTitle("Your Title");
+                m_builder.setContentText("Your text");
+                m_builder.setPriority(Notification.PRIORITY_MAX);
+                m_builder.setStyle(bigText);
+                m_builder.setAutoCancel(true);
+
+                NotificationManager mNotificationManager =
+                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 
-        value = data.get("action");
-        if (value != null) {
-            if (value.contains("share")) {
-                PendingIntent pendingShareIntent = PendingIntent.getActivity(this, 0 , intent,
-                        PendingIntent.FLAG_ONE_SHOT);
-                notificationBuilder.addAction(new NotificationCompat.Action(R.drawable.ic_share_black_24dp,"Share",pendingShareIntent));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    NotificationChannel channel = new NotificationChannel("notify_001",
+                            "Channel human readable title",
+                            NotificationManager.IMPORTANCE_DEFAULT);
+                    mNotificationManager.createNotificationChannel(channel);
+                }
+
+                mNotificationManager.notify(0, m_builder.build());
             }
-            if (value.contains("go to sale")) {
-                PendingIntent pendingShareIntent = PendingIntent.getActivity(this, 0 , intent,
-                        PendingIntent.FLAG_ONE_SHOT);
-                notificationBuilder.addAction(new NotificationCompat.Action(R.drawable.ic_shopping_cart_black_24dp,"Go to sale!",pendingShareIntent));
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
+        });
 
-        }
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        notificationManager.notify(0 , notificationBuilder.build());
-
-        Log.e(TAG, "onMessageReceived() <<");
-
+//        Intent intentToInvoke = new Intent(this, ProductDetails.class);
+//        intentToInvoke.putExtra("Product", );
+//        intentToInvoke.putExtra("user_email",user.getEmail());
+//        intentToInvoke.putExtra("user_ParchesedList",user.getMyBags());
+//        intentToInvoke.putExtra("user_total",user.getTotalPurchase());
+//
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intentToInvoke, 0);
+//
+//        NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
+//        bigText.bigText("hello world");
+//        bigText.setBigContentTitle("Today's Bible Verse");
+//        bigText.setSummaryText("Text in detail");
+//
+//        mBuilder.setContentIntent(pendingIntent);
+//        mBuilder.setSmallIcon(R.mipmap.ic_sun);
+//        mBuilder.setContentTitle("Your Title");
+//        mBuilder.setContentText("Your text");
+//        mBuilder.setPriority(Notification.PRIORITY_MAX);
+//        mBuilder.setStyle(bigText);
+//        mBuilder.setAutoCancel(true);
+//
+//        NotificationManager mNotificationManager =
+//                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            NotificationChannel channel = new NotificationChannel("notify_001",
+//                    "Channel human readable title",
+//                    NotificationManager.IMPORTANCE_DEFAULT);
+//            mNotificationManager.createNotificationChannel(channel);
+//        }
+//
+//        mNotificationManager.notify(0, mBuilder.build());
     }
 }
