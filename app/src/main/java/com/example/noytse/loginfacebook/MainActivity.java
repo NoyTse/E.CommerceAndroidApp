@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.noytse.loginfacebook.model.AnalyticsManager;
 import com.example.noytse.loginfacebook.model.User;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
         boolean isFromProductDetails = getIntent().getBooleanExtra("isFromProductDetails", false);
         boolean isAnonymouse = getIntent().getBooleanExtra("isAnonymouse", false);
 
@@ -67,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
         mEmailPassLogin = new EmailPasswordLogin(this,mAuth);
         SignInButton gmailSignInBtn = (SignInButton)findViewById(R.id.btnGoogleSignIn);
         mGmailLogin = new GmailLogin(this,gmailSignInBtn);
-
         ((AppCompatButton)findViewById(R.id.btnSignIn)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

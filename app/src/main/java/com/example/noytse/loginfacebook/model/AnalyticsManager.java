@@ -100,6 +100,10 @@ public class AnalyticsManager {
 
     public void trackAppEntrance(){
 
+        //Firebase
+        Bundle params = new Bundle();
+        params.putString(FirebaseAnalytics.Param.SEARCH_TERM, "App Entramce");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SEARCH,params);
     }
 
     public void init(Context context) {
