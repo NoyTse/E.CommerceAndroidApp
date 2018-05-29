@@ -305,8 +305,7 @@ public class user_details_form extends AppCompatActivity {
         });
     }
     @Override
-    public void onStop(){
-        super.onStop();
+    public void onUserLeaveHint() {
         AnalyticsManager.getInstance().trackTimeInsideTheApp();
     }
 

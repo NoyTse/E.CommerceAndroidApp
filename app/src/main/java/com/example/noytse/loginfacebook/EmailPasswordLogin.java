@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.noytse.loginfacebook.MainActivity;
+import com.example.noytse.loginfacebook.analytics.AnalyticsManager;
 import com.example.noytse.loginfacebook.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -86,6 +87,7 @@ public class EmailPasswordLogin {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            AnalyticsManager.getInstance().trackSignupEvent("Email-password");
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();

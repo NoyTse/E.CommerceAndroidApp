@@ -46,8 +46,7 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onStop(){
-        super.onStop();
+    public void onUserLeaveHint() {
         AnalyticsManager.getInstance().trackTimeInsideTheApp();
     }
 }

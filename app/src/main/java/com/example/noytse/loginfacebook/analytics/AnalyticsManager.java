@@ -10,11 +10,16 @@ import com.flurry.android.FlurryAgent;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 
-
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.concurrent.TimeUnit;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static junit.framework.Assert.assertEquals;
 
 public class AnalyticsManager {
     private static String TAG = "AnalyticsManager";
@@ -136,9 +141,10 @@ public class AnalyticsManager {
         long diffInMillies = MainActivity.enterAppTime.getTime() - time.getTime();
         long timeInside = TimeUnit.MILLISECONDS.toSeconds(diffInMillies);
 
+
         //Firebase
         Bundle params = new Bundle();
-        params.putLong(eventName, timeInside);
+        params.putString(eventName, timeToStr(timeInside));
         mFirebaseAnalytics.logEvent(eventName,params);
 
         //Flurry
@@ -149,6 +155,12 @@ public class AnalyticsManager {
 
     private String timeToStr(long milli)
     {
+        //Period p = Period.between(birthday, today);
+        //long p2 = ChronoUnit.DAYS.between(birthday, today);
+        //System.out.println("You are " + p.getYears() + " years, " + p.getMonths() +
+           //     " months, and " + p.getDays() +
+         //       " days old. (" + p2 + " days total)");
+       // Duration.between(Instant.now(),Instant.now())
         long second = (milli / 1000) % 60;
         long minute = (milli / (1000 * 60)) % 60;
         long hour = (milli / (1000 * 60 * 60)) % 24;
@@ -193,7 +205,7 @@ public class AnalyticsManager {
 
 
 //    public void trackLoginEvent(String loginMethod) {
-//
+
 //        String eventName = "login";
 //        Bundle params = new Bundle();
 //        params.putString(FirebaseAnalytics.Param.SIGN_UP_METHOD, loginMethod);
