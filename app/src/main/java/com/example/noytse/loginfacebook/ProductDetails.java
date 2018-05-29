@@ -155,8 +155,7 @@ public class ProductDetails extends AppCompatActivity {
     }
 
     @Override
-    public void onStop(){
-        super.onStop();
+    public void onUserLeaveHint() {
         AnalyticsManager.getInstance().trackTimeInsideTheApp();
     }
 }
