@@ -120,13 +120,13 @@ public class AnalyticsManager {
         //Firebase
         Bundle params = new Bundle();
         params.putString("filter_by", filterParameter);
-        params.putString("filter_Type", filterParameter);
+        params.putString("filter_Type", filterType);
         mFirebaseAnalytics.logEvent(eventName,params);
 
         //Flurry
         Map<String, String> eventParams = new HashMap<String, String>();
         eventParams.put("filter by", filterParameter);
-        eventParams.put("filter_Type", filterParameter);
+        eventParams.put("filter_Type", filterType);
         FlurryAgent.logEvent(eventName, eventParams);
     }
 
@@ -171,7 +171,7 @@ public class AnalyticsManager {
     public void trackAppEntrance(){
         String eventName = "entrance";
         Bundle params = new Bundle();
-        params.putString(eventName, timeToStr(MainActivity.enterAppTime.getTime()));
+        params.putString(eventName, MainActivity.enterAppTime.toString());
         mFirebaseAnalytics.logEvent(eventName,params  );
 
         //Flurry
