@@ -61,7 +61,7 @@ public class AnalyticsManager {
         //Flurry
         Map<String, String> eventParams = new HashMap<String, String>();
         eventParams.put("prod_name", prod.getName());
-        eventParams.put("song_price",prod.getPrice());
+        eventParams.put("price",prod.getPrice());
 
         FlurryAgent.logEvent(eventName,eventParams);
 
@@ -69,7 +69,7 @@ public class AnalyticsManager {
 
     // Called when sending a review
     public void trackTimeBetweenPurchaseAndReview(){
-        String eventName = "timeBetweenPurchRev";
+        String eventName = "timeBetweenPurchaseToReview";
         long diffInMillies = ProductDetails.purchaseTime.getTime() - new Date().getTime();
         long timeBetween = TimeUnit.MILLISECONDS.toSeconds(diffInMillies);
         int timeBetweenDays = (int)timeBetween/60/60/24;
@@ -117,16 +117,16 @@ public class AnalyticsManager {
     }
 
     public void trackFilterParameters(String filterParameter){
-        String eventName = "sort";
+        String eventName = "filter";
 
         //Firebase
         Bundle params = new Bundle();
-        params.putString(FirebaseAnalytics.Param.SEARCH_TERM, filterParameter);
+        params.putString("filter_by", filterParameter);
         mFirebaseAnalytics.logEvent(eventName,params);
 
         //Flurry
         Map<String, String> eventParams = new HashMap<String, String>();
-        eventParams.put("search term", filterParameter);
+        eventParams.put("filter by", filterParameter);
         FlurryAgent.logEvent(eventName, eventParams);
     }
 
