@@ -37,6 +37,7 @@ public class ProductListActivity extends AppCompatActivity {
     private FirebaseUser mFirebaseUser;
     private User myUser;
     private boolean myItemsShow = false;
+    private String filterStartup = null;
 
     private enum eSort {
         NAME,
@@ -54,7 +55,9 @@ public class ProductListActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_product_list);
 
-
+        if (this.getIntent().hasExtra("filterBy")){
+            this.filterStartup = this.getIntent().getStringExtra("filterBy");
+        }
         ProductsDatabase mDataBase = new ProductsDatabase(myUser,this); //fetch products from db
 
         mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -85,9 +88,9 @@ public class ProductListActivity extends AppCompatActivity {
             });
         }
 
-        mProductList = getProductList();
+
         mListView = findViewById(R.id.listView_Products);
-        mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),this, myUser));
+
 
         //Search bar visibilty handling
         findViewById(R.id.viewSearchLayout).setVisibility(mSearchVisible ? View.VISIBLE : View.GONE);
@@ -95,8 +98,8 @@ public class ProductListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mSearchVisible = !mSearchVisible;
-                if (!mSearchVisible)
-                    mProductList = getProductList();
+/*                if (!mSearchVisible)
+                    mProductList = getProductList();*/
                 findViewById(R.id.viewSearchLayout).setVisibility(mSearchVisible ? View.VISIBLE : View.GONE);
             }
         });
@@ -300,9 +303,15 @@ public class ProductListActivity extends AppCompatActivity {
         mListView.setAdapter(productsAdapter);
     }
 
-    private Map<String,ProductWithKey> getProductList() {
-        return new HashMap<>();
-        //TODO here should be the code that fetch the data from the firebase storeage
+    private ProductsAdapter filterListByCategory(final String category) {
+        Map<String,ProductWithKey> filteredList = new HashMap<>();
+        for (String key : mProductList.keySet()){
+            ProductWithKey prod = mProductList.get(key);
+            if (prod.getproduct().getName().contains(category) || prod.getproduct().getCategory().contains(category)
+                    || prod.getproduct().getPrice().contains(category))
+                filteredList.put(key,mProductList.get(key));
+        }
+        return new ProductsAdapter(new ArrayList<ProductWithKey>(filteredList.values()),getApplicationContext(), myUser);
     }
 
     private void updateSortedProductList(DataSnapshot snapshot){
@@ -339,7 +348,14 @@ public class ProductListActivity extends AppCompatActivity {
                 }
             }
         }
-        mListView.setAdapter(new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),this,myUser));
+        ProductsAdapter productsAdapter;
+        if (this.filterStartup != null){
+          productsAdapter = filterListByCategory(this.filterStartup);
+          this.filterStartup = null;
+        } else {
+            productsAdapter = new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),this,myUser);
+        }
+        mListView.setAdapter(productsAdapter);
     }
 
     private void filterProductList(DataSnapshot snapshot, final filterResult filterResult, final boolean updateUiWhenFinish) {
