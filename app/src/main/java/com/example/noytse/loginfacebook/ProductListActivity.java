@@ -307,8 +307,7 @@ public class ProductListActivity extends AppCompatActivity {
         Map<String,ProductWithKey> filteredList = new HashMap<>();
         for (String key : mProductList.keySet()){
             ProductWithKey prod = mProductList.get(key);
-            if (prod.getproduct().getName().contains(category) || prod.getproduct().getCategory().contains(category)
-                    || prod.getproduct().getPrice().contains(category))
+            if (prod.getproduct().getCategory().equals(category))
                 filteredList.put(key,mProductList.get(key));
         }
         return new ProductsAdapter(new ArrayList<ProductWithKey>(filteredList.values()),getApplicationContext(), myUser);
@@ -348,13 +347,7 @@ public class ProductListActivity extends AppCompatActivity {
                 }
             }
         }
-        ProductsAdapter productsAdapter;
-        if (this.filterStartup != null){
-          productsAdapter = filterListByCategory(this.filterStartup);
-          this.filterStartup = null;
-        } else {
-            productsAdapter = new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),this,myUser);
-        }
+        ProductsAdapter productsAdapter = new ProductsAdapter(new ArrayList<ProductWithKey>(mProductList.values()),this,myUser);
         mListView.setAdapter(productsAdapter);
     }
 
