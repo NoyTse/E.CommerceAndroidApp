@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "com.example.noytse.loginfacebook"
+        applicationId "com.ochos.noytse.loginfacebook"
         minSdkVersion 24
         targetSdkVersion 26
         versionCode 1

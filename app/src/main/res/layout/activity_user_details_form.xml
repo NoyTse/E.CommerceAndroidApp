@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingHorizontal="20dp"
-    tools:context="com.example.noytse.loginfacebook.user_details_form">
+    tools:context="com.ochos.noytse.loginfacebook.user_details_form">
     <ImageView
         android:id="@+id/imgUserDetail_logo"
         android:layout_width="wrap_content"
