@@ -8,30 +8,14 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:13742759186:android:c36a93fb50158e34",
+        "mobilesdk_app_id": "1:13742759186:android:80c7efcbd5486def",
         "android_client_info": {
           "package_name": "com.ochos.noytse.loginfacebook"
         }
       },
       "oauth_client": [
         {
-          "client_id": "13742759186-sttd2nb4ccme1e71fenmsgn45v1lj5jh.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.ochos.noytse.loginfacebook",
-            "certificate_hash": "0232f75b56886d9d77d631e0abe1fd71fb901c94"
-          }
-        },
-        {
-          "client_id": "13742759186-h28vaqvv2mqvg7scdjnh4lb87n8bljor.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.ochos.noytse.loginfacebook",
-            "certificate_hash": "0c363ff11f78c13ee25607ba9014baf9b0daea70"
-          }
-        },
-        {
-          "client_id": "13742759186-aln86ehcqci7bh5qul0hvkt7ocddve4t.apps.googleusercontent.com",
+          "client_id": "13742759186-i66jqhbulvffr46knau28ccdt9kke5bp.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.ochos.noytse.loginfacebook",
@@ -39,32 +23,8 @@
           }
         },
         {
-          "client_id": "13742759186-pv0nk5821fe79201sm2j7gig8onir8ps.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.ochos.noytse.loginfacebook",
-            "certificate_hash": "9e66fc435f0b619efa0f1c4423dbdc9a70a4cdd5"
-          }
-        },
-        {
           "client_id": "13742759186-io5on76vb4qa1692prus5gkucnfk7fk5.apps.googleusercontent.com",
           "client_type": 3
-        },
-        {
-          "client_id": "13742759186-k9alldcjg2fhspkbsfiknmrost63jcjj.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.ochos.noytse.loginfacebook",
-            "certificate_hash": "8b5268ee4648bc91ce20c6bd9b4754f5850681ca"
-          }
-        },
-        {
-          "client_id": "13742759186-a5u050p4tdi67vq074jv991ajjpr2fe0.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.ochos.noytse.loginfacebook",
-            "certificate_hash": "81e6df2cb7bbd743e0b5eb778f4f002059c90214"
-          }
         },
         {
           "client_id": "13742759186-p3hndq0f36irh3shj783pujf7klfdcsc.apps.googleusercontent.com",

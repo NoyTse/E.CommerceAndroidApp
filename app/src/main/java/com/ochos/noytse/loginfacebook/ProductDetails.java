@@ -2,6 +2,8 @@ package com.ochos.noytse.loginfacebook;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,16 +14,22 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.android.billingclient.api.BillingClient.BillingResponse;
 
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.Purchase;
+import com.ochos.noytse.loginfacebook.Billing.BillingManager;
 import com.ochos.noytse.loginfacebook.analytics.AnalyticsManager;
 import com.ochos.noytse.loginfacebook.model.Product;
 import com.ochos.noytse.loginfacebook.model.ProductWithKey;
+import com.ochos.noytse.loginfacebook.model.PurchaseDB;
 import com.ochos.noytse.loginfacebook.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,18 +37,24 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class ProductDetails extends AppCompatActivity {
+public class ProductDetails extends AppCompatActivity implements BillingManager.BillingUpdatesListener {
+    public final static String TAG = "ProductDetails";
     User user;
     String key;
     ProductWithKey mProduct;
     boolean mBagWasPurchase;
     public static Date purchaseTime;
+    private BillingManager mBillingManager;
+    public final static String _BAG = "bag1";
+    public final static String _TOWEL = "towel1";
+    public final static String _SHOE = "shoe1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
 
+        mBillingManager = new BillingManager(this,this);
 
         mProduct = (ProductWithKey) this.getIntent().getSerializableExtra("Product");
         if(this.getIntent().hasExtra("Product")){
@@ -100,19 +114,23 @@ public class ProductDetails extends AppCompatActivity {
                     if (!mProduct.isPurchased()) {
                         purchaseTime = new Date();
                         AnalyticsManager.getInstance().trackPurchase(mProduct.getproduct());
-                        mProduct.setPurchased(true);
-                        user.upgdateTotalPurchase(Float.parseFloat(mProduct.getproduct().getPrice().replace("$","")));
-                        if (user.getMyBags() == null)
-                            user.setMyBags(new ArrayList<Integer>());
-                        user.getMyBags().add(Integer.parseInt(mProduct.getKey()));
-                        //Save in db
-                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
-                        Map<String,Object> updateUser = new HashMap<>();
-                        updateUser.put(mAuth.getUid(),user);
-                        userRef.updateChildren(updateUser);
-                        btnPurchase.setEnabled(false);
-                        btnPurchase.setText("Purchased! :)");
-                        btnAddReview.setVisibility(View.VISIBLE);
+                        String billingType = "";
+                        switch(mProduct.getproduct().getCategory()){
+                            case "bags":{
+                                billingType = _BAG;
+                                break;
+                            }
+                            case "towels":{
+                                billingType = _TOWEL;
+                                break;
+                            }
+                            case "shoes":{
+                                billingType = _SHOE;
+                                break;
+                            }
+                        }
+                        String sku = BillingClient.SkuType.INAPP;
+                        mBillingManager.initiatePurchaseFlow(billingType,sku);
                     }
                 }
             }
@@ -157,5 +175,59 @@ public class ProductDetails extends AppCompatActivity {
     @Override
     public void onUserLeaveHint() {
         AnalyticsManager.getInstance().trackTimeInsideTheApp();
+    }
+
+    @Override
+    public void onBillingClientSetupFinished() {
+
+    }
+
+    @Override
+    public void onConsumeFinished(String token, int result) {
+
+    }
+
+    @Override
+    public void onPurchasesUpdated(int resultCode, List<Purchase> purchases) {
+        Log.e(TAG,"onPurchasesUpdated() >> ");
+        final Button btnPurchase = findViewById(R.id.prodDetail_btnPurchase);
+        final Button btnAddReview = findViewById(R.id.prodDetail_btnAddReview);
+
+        if (resultCode != BillingResponse.OK) {
+            Log.e(TAG,"onPurchasesUpdated() << Error:"+resultCode);
+            return;
+        }
+
+        for (Purchase purchase : purchases) {
+            Log.e(TAG, "onPurchasesUpdated() >> " + purchase.toString());
+
+            // displayMessage("onPurchasesUpdated() >> " + purchase.getSku());
+
+                Log.e(TAG, "onPurchasesUpdated() >> consuming " + purchase.getSku());
+                //Only consume  one time product (subscription can't be consumed).
+                mBillingManager.consumeAsync(purchase.getPurchaseToken());
+
+            //Update the server...
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            mProduct.setPurchased(true);
+            user.upgdateTotalPurchase(Float.parseFloat(mProduct.getproduct().getPrice().replace("$","")));
+            if (user.getMyBags() == null)
+                user.setMyBags(new ArrayList<Integer>());
+            user.getMyBags().add(Integer.parseInt(mProduct.getKey()));
+            //Save in db
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
+            Map<String,Object> updateUser = new HashMap<>();
+            updateUser.put(mAuth.getUid(),user);
+            userRef.updateChildren(updateUser);
+            btnPurchase.setEnabled(false);
+            btnPurchase.setText("Purchased! :)");
+            btnAddReview.setVisibility(View.VISIBLE);
+
+            DatabaseReference purchaseRef = FirebaseDatabase.getInstance().getReference("Purchases");
+            PurchaseDB purchaseDB = new PurchaseDB(/*mProduct,user, */purchase.getPurchaseTime(),mProduct.getproduct().getCategory(),purchase.getOrderId(),purchase.getPurchaseToken(),1);
+            purchaseRef.setValue(purchaseDB);
+        }
+
+        Log.e(TAG,"onPurchasesUpdated() <<");
     }
 }
